@@ -1,25 +1,23 @@
-﻿using Assets._Scripts.Board.Abstract;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Square : MonoBehaviour, ISquare
+public class Square : MonoBehaviour
 {
-    public char Rank => 'A';
+    [SerializeField]
+    private char _column;
 
-    public char File => '1';
+    [SerializeField]
+    public char _row;
 
-    public bool IsOccupied => false;
+    public bool IsOccupied { get; set; }
 
-    // Start is called before the first frame update
-    void Start()
+    internal void SetCoordinates(char row, char column)
     {
-        
+        _row = row;
+        _column = column;
     }
 
-    // Update is called once per frame
-    void Update()
+    internal void SetColor(Material material)
     {
-        
+        gameObject.GetComponent<Renderer>().material = material;
     }
 }
