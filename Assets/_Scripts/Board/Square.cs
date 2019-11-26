@@ -9,7 +9,7 @@ public class Square : MonoBehaviour
 
     public bool IsOccupied { get; set; }
 
-    internal List<SquareMarkTextFlag> SquareTextSymbolFlags { get; private set; }
+    internal List<SquareMarkOrientation> SquareMarkOrientationFlags { get; private set; }
 
     internal void SetCoordinates(char row, char column)
     {
@@ -27,20 +27,19 @@ public class Square : MonoBehaviour
         gameObject.GetComponent<Renderer>().material = material;
     }
 
-    // TODO | Rework this method because it's ugly (but need to test functionality first)
     private void SetSquareTextSymbolFlat()
     {
-        SquareTextSymbolFlags = new List<SquareMarkTextFlag>();
+        SquareMarkOrientationFlags = new List<SquareMarkOrientation>();
 
         if (_coord.Row.Equals(BoardConfiguration.AvailableSquareNumbers[0]) ||
            _coord.Row.Equals(BoardConfiguration.AvailableSquareNumbers[BoardConfiguration.AvailableSquareNumbers.Length - 1]))
         {
-            SquareTextSymbolFlags.Add(SquareMarkTextFlag.Horizontal);
+            SquareMarkOrientationFlags.Add(SquareMarkOrientation.Horizontal);
         }
         if (_coord.Column.Equals(BoardConfiguration.AvailableSquareSymbols[0]) ||
             _coord.Column.Equals(BoardConfiguration.AvailableSquareSymbols[BoardConfiguration.AvailableSquareSymbols.Length - 1]))
         {
-            SquareTextSymbolFlags.Add(SquareMarkTextFlag.Vertical);
+            SquareMarkOrientationFlags.Add(SquareMarkOrientation.Vertical);
         }
     }
 }
