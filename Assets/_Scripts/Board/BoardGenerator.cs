@@ -130,18 +130,31 @@ public class BoardGenerator : MonoBehaviour
                     AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Right);
                 }
             }
-
         }
     }
 
     private void AddMarkingGameObjectToSquare(GameObject square, SquareMarkLocation markLocation)
     {
-        var markContainer = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        markContainer.name = markLocation.Equals(SquareMarkLocation.Top | SquareMarkLocation.Bottom) ? 
+        string markName = markLocation.Equals(SquareMarkLocation.Top | SquareMarkLocation.Bottom) ?
                                                     "SquareMarkHorizontal" : "SquareMarkVertical";
 
+        var markContainer = new GameObject(markName, typeof(TextMesh));
         markContainer.AddAsChildrenTo(square.gameObject);
-        markContainer.transform.localScale = square.transform.localScale;
+
+        markContainer.transform.localScale = new Vector3
+        {
+            x = square.transform.localScale.x / 10f,
+            y = square.transform.localScale.y /2f,
+            z = square.transform.localScale.z / 10f
+        };
+
+        markContainer.transform.localRotation = Quaternion.Euler(markLocation == SquareMarkLocation.Top ? -90f : 90f, 0f, 0f);
+
+        var markCointanderTextMesh = markContainer.GetComponent<TextMesh>();
+        markCointanderTextMesh.fontSize = 72;
+        markCointanderTextMesh.text = SetMarkContainerText(square, markLocation);
+        markCointanderTextMesh.alignment = TextAlignment.Center;
+        markCointanderTextMesh.anchor = TextAnchor.MiddleCenter;
 
         Vector3 markPositionOffset = Vector3.zero;
 
@@ -178,37 +191,17 @@ public class BoardGenerator : MonoBehaviour
         markContainer.transform.localPosition = markPositionOffset;
     }
 
-    [Obsolete]
-    private void AddSquareTextMark(Square currentSquare)
+    private string SetMarkContainerText(GameObject square, SquareMarkLocation markLocation)
     {
-        foreach (var textSymbolFlag in currentSquare.SquareMarkOrientationFlags)
+        if (markLocation == SquareMarkLocation.Top || markLocation == SquareMarkLocation.Bottom)
         {
-            GameObject squareMark = new GameObject(BoardConfiguration.SquareMarkTextGameObjectName);
-            squareMark.AddAsChildrenTo(currentSquare.gameObject);
-            SetTextSymbolLocalPosition(currentSquare, squareMark);
-            SetTextSymbolTextMeshOptions(currentSquare, squareMark, textSymbolFlag);
+            return square.GetComponent<Square>().GetCoordinates().Column.ToString();
         }
-    }
+        else if (markLocation == SquareMarkLocation.Right || markLocation == SquareMarkLocation.Left)
+        {
+            return square.GetComponent<Square>().GetCoordinates().Row.ToString();
+        }
 
-    private void SetTextSymbolLocalPosition(Square currentSquare, GameObject squareMark)
-    {
-        squareMark.transform.localPosition = Vector3.zero;
-
-        squareMark.transform.localEulerAngles = new Vector3(currentSquare.transform.rotation.x + 90f,
-            currentSquare.transform.rotation.y, currentSquare.transform.rotation.z);
-
-        squareMark.transform.localScale = new Vector3(currentSquare.gameObject.transform.localScale.x / 5,
-            currentSquare.gameObject.transform.localScale.y, currentSquare.gameObject.transform.localScale.z / 5);
-    }
-
-    private void SetTextSymbolTextMeshOptions(Square square, GameObject squareMark, SquareMarkOrientation markOrientation)
-    {
-        squareMark.AddComponent<MeshRenderer>();
-        var textSymbolTextMesh = squareMark.AddComponent<TextMesh>();
-
-        textSymbolTextMesh.text = markOrientation == SquareMarkOrientation.Horizontal ?
-            square.GetCoordinates().Column.ToString() : square.GetCoordinates().Row.ToString();
-
-        textSymbolTextMesh.fontSize = 20;
+        return string.Empty;
     }
 }
