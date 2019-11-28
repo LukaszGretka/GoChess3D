@@ -1,7 +1,5 @@
 ﻿using Assets._Scripts.Board;
 using Assets._Scripts.Helpers;
-using System;
-using System.Linq;
 using UnityEngine;
 
 public class BoardGenerator : MonoBehaviour
@@ -49,9 +47,6 @@ public class BoardGenerator : MonoBehaviour
 
     private void AddFieldsToContainer(Transform containerTransform)
     {
-        char currentSquareSymbol = BoardConfiguration.AvailableSquareSymbols[0];
-        char currentSquareNumber = BoardConfiguration.AvailableSquareNumbers[0];
-
         Vector3 primarySpawnPoint = new Vector3
         {
             x = _simpleSquare.transform.localScale.x / 2f - BoardConfiguration.BoardHorizontalSize / 2f,
@@ -65,20 +60,18 @@ public class BoardGenerator : MonoBehaviour
         for (int horizontalIndex = 0; horizontalIndex < BoardConfiguration.SquaresHorizontalDimension; horizontalIndex++)
         {
             var spawnedSquare = Instantiate(_simpleSquare, currentSpawnPoint, Quaternion.identity, containerTransform);
-            currentSquareSymbol = BoardConfiguration.AvailableSquareSymbols[horizontalIndex];
+            var currentSquareSymbol = BoardConfiguration.AvailableSquareSymbols[horizontalIndex];
             var currentSquareScript = spawnedSquare.AddComponent<Square>();
-            currentSquareScript = SetCurrentSquareBasicComponents(currentSquareScript, BoardConfiguration.AvailableSquareNumbers[0], BoardConfiguration.AvailableSquareSymbols[horizontalIndex], currentSquareMaterial);
-            //AddSquareTextMark(currentSquareScript);
+            SetCurrentSquareBasicComponents(currentSquareScript, BoardConfiguration.AvailableSquareNumbers[0], BoardConfiguration.AvailableSquareSymbols[horizontalIndex], currentSquareMaterial);
 
             for (int verticalIndex = 1; verticalIndex < BoardConfiguration.SquaresVerticalDimension; verticalIndex++)
             {
                 currentSpawnPoint = new Vector3(currentSpawnPoint.x, currentSpawnPoint.y, currentSpawnPoint.z + 1f);
                 spawnedSquare = Instantiate(_simpleSquare, currentSpawnPoint, Quaternion.identity, containerTransform);
                 currentSquareMaterial = SwitchSquareMaterial(currentSquareMaterial);
-                currentSquareNumber = BoardConfiguration.AvailableSquareNumbers[verticalIndex];
+                var currentSquareNumber = BoardConfiguration.AvailableSquareNumbers[verticalIndex];
                 currentSquareScript = spawnedSquare.AddComponent<Square>();
-                currentSquareScript = SetCurrentSquareBasicComponents(currentSquareScript, currentSquareNumber, currentSquareSymbol, currentSquareMaterial);
-                //AddSquareTextMark(currentSquareScript);
+                SetCurrentSquareBasicComponents(currentSquareScript, currentSquareNumber, currentSquareSymbol, currentSquareMaterial);
             }
 
             currentSpawnPoint = new Vector3(currentSpawnPoint.x + 1f, currentSpawnPoint.y, primarySpawnPoint.z);
