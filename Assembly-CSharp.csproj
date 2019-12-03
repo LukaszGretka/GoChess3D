@@ -70,6 +70,7 @@
     <Compile Include="Assets\_Scripts\Board\Models\Coord.cs" />
     <Compile Include="Assets\_Scripts\Board\Square.cs" />
     <Compile Include="Assets\_Scripts\Board\SquareMarkingFlags.cs" />
+    <Compile Include="Assets\_Scripts\Configuration\GameObjectNames.cs" />
     <Compile Include="Assets\_Scripts\Helpers\GameObjectHelper.cs" />
     <Compile Include="Assets\_Scripts\Logic\PiecesMovement\KingMovement.cs" />
     <Compile Include="Assets\_Scripts\Pieces\King.cs" />

@@ -1,4 +1,6 @@
 ﻿using Assets._Scripts.Board;
+using Assets._Scripts.Board.Models;
+using Assets._Scripts.Configuration;
 using Assets._Scripts.Helpers;
 using UnityEngine;
 
@@ -16,19 +18,18 @@ public class BoardGenerator : MonoBehaviour
     [SerializeField]
     private Material _boardBorderMaterial;
 
-    // Start is called before the first frame update
     internal void Awake()
     {
         GenerateBoardBorder();
         var fieldsContainer = GenerateFieldsContainer();
         AddFieldsToContainer(fieldsContainer.transform);
-        AddBoardBorderMarking(fieldsContainer);
+        AddBoardBorderMarking(fieldsContainer.GetComponentsInChildren<Square>());
     }
 
     private GameObject GenerateBoardBorder()
     {
         GameObject boardBorder = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        boardBorder.name = BoardConfiguration.BorderGameObjectName;
+        boardBorder.name = GameObjectNames.Border;
         boardBorder.AddAsChildrenTo(gameObject);
         boardBorder.transform.localScale = new Vector3(BoardConfiguration.BoardHorizontalSize + BoardConfiguration.BorderThickness, BoardConfiguration.BorderHight, BoardConfiguration.BoardVerticalSize + BoardConfiguration.BorderThickness);
         boardBorder.transform.position = Vector3.zero;
@@ -39,7 +40,7 @@ public class BoardGenerator : MonoBehaviour
 
     private GameObject GenerateFieldsContainer()
     {
-        GameObject fieldsContainer = new GameObject("FieldsContainer");
+        GameObject fieldsContainer = new GameObject(GameObjectNames.FieldsContainer);
         fieldsContainer.transform.localScale = Vector3.one;
         fieldsContainer.AddAsChildrenTo(gameObject);
         return fieldsContainer;
@@ -50,7 +51,7 @@ public class BoardGenerator : MonoBehaviour
         Vector3 primarySpawnPoint = new Vector3
         {
             x = _simpleSquare.transform.localScale.x / 2f - BoardConfiguration.BoardHorizontalSize / 2f,
-            y = containerTransform.localPosition.y + 0.1f, // TODO | replace with config variable
+            y = containerTransform.localPosition.y + BoardConfiguration.FieldsHeight,
             z = _simpleSquare.transform.localScale.z / 2f - BoardConfiguration.BoardVerticalSize / 2f
         };
 
@@ -66,7 +67,7 @@ public class BoardGenerator : MonoBehaviour
 
             for (int verticalIndex = 1; verticalIndex < BoardConfiguration.SquaresVerticalDimension; verticalIndex++)
             {
-                currentSpawnPoint = new Vector3(currentSpawnPoint.x, currentSpawnPoint.y, currentSpawnPoint.z + 1f);
+                currentSpawnPoint = new Vector3(currentSpawnPoint.x, currentSpawnPoint.y, currentSpawnPoint.z + BoardConfiguration.FieldsSplitDistance);
                 spawnedSquare = Instantiate(_simpleSquare, currentSpawnPoint, Quaternion.identity, containerTransform);
                 currentSquareMaterial = SwitchSquareMaterial(currentSquareMaterial);
                 var currentSquareNumber = BoardConfiguration.AvailableSquareNumbers[verticalIndex];
@@ -74,7 +75,7 @@ public class BoardGenerator : MonoBehaviour
                 SetCurrentSquareBasicComponents(currentSquareScript, currentSquareNumber, currentSquareSymbol, currentSquareMaterial);
             }
 
-            currentSpawnPoint = new Vector3(currentSpawnPoint.x + 1f, currentSpawnPoint.y, primarySpawnPoint.z);
+            currentSpawnPoint = new Vector3(currentSpawnPoint.x + BoardConfiguration.FieldsSplitDistance, currentSpawnPoint.y, primarySpawnPoint.z);
         }
     }
 
@@ -91,48 +92,55 @@ public class BoardGenerator : MonoBehaviour
         return currentSquare;
     }
 
-    // TODO | Need refactoring for sure! (but works well)
-    private void AddBoardBorderMarking(GameObject fieldsContainer)
+    private void AddBoardBorderMarking(Square[] squares)
     {
-        var squares = fieldsContainer.GetComponentsInChildren<Square>();
-
         foreach (var square in squares)
         {
             if (square.SquareMarkOrientationFlags.Contains(SquareMarkOrientation.Horizontal))
             {
-                if (square.GetComponent<Square>().GetCoordinates().Row.Equals('1'))
-                {
-                    AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Bottom);
-                }
-
-                if (square.GetComponent<Square>().GetCoordinates().Row.Equals('8'))
-                {
-                    AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Top);
-                }
+                AddHorizontalBoardMarker(square);
             }
 
-            if (square.GetComponent<Square>().SquareMarkOrientationFlags.Contains(SquareMarkOrientation.Vertical))
+            if (square.SquareMarkOrientationFlags.Contains(SquareMarkOrientation.Vertical))
             {
-                if (square.GetComponent<Square>().GetCoordinates().Column.Equals('A'))
-                {
-                    AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Left);
-                }
-
-                if (square.GetComponent<Square>().GetCoordinates().Column.Equals('H'))
-                {
-                    AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Right);
-                }
+                AddVerticalBoardMarker(square);
             }
+        }
+    }
+
+    private void AddHorizontalBoardMarker(Square square)
+    {
+        if (square.GetCoordinates().Row.Equals(BoardConfiguration.AvailableSquareNumbers[0]))
+        {
+            AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Bottom);
+        }
+
+        if (square.GetCoordinates().Row.Equals(BoardConfiguration.AvailableSquareNumbers[BoardConfiguration.AvailableSquareNumbers.Length - 1]))
+        {
+            AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Top);
+        }
+    }
+
+    private void AddVerticalBoardMarker(Square square)
+    {
+        if (square.GetCoordinates().Column.Equals(BoardConfiguration.AvailableSquareSymbols[0]))
+        {
+            AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Left);
+        }
+
+        if (square.GetCoordinates().Column.Equals(BoardConfiguration.AvailableSquareSymbols[BoardConfiguration.AvailableSquareSymbols.Length - 1]))
+        {
+            AddMarkingGameObjectToSquare(square.gameObject, SquareMarkLocation.Right);
         }
     }
 
     private void AddMarkingGameObjectToSquare(GameObject square, SquareMarkLocation markLocation)
     {
         string markName = markLocation.Equals(SquareMarkLocation.Top | SquareMarkLocation.Bottom) ?
-                                                    "SquareMarkHorizontal" : "SquareMarkVertical";
+                                                    GameObjectNames.SquareMarkHorizontal : GameObjectNames.SquareMarkVertical;
 
         var markContainer = new GameObject(markName, typeof(TextMesh));
-        markContainer.AddAsChildrenTo(square.gameObject);
+        markContainer.AddAsChildrenTo(square);
 
         markContainer.transform.localScale = new Vector3
         {
@@ -141,60 +149,57 @@ public class BoardGenerator : MonoBehaviour
             z = square.transform.localScale.z / 10f
         };
 
-        markContainer.transform.localRotation = Quaternion.Euler(markLocation == SquareMarkLocation.Top ? -90f : 90f, 0f, 0f);
-
-        var markCointanderTextMesh = markContainer.GetComponent<TextMesh>();
-        markCointanderTextMesh.fontSize = 72;
-        markCointanderTextMesh.text = SetMarkContainerText(square, markLocation);
-        markCointanderTextMesh.alignment = TextAlignment.Center;
-        markCointanderTextMesh.anchor = TextAnchor.MiddleCenter;
-
-        Vector3 markPositionOffset = Vector3.zero;
-
-        // TODO | Refactor this switch 
-        switch (markLocation)
-        {
-            case SquareMarkLocation.Top:
-                markPositionOffset = new Vector3
-                {
-                    z = markContainer.transform.localPosition.z + square.transform.localScale.z
-                };
-                break;
-
-            case SquareMarkLocation.Bottom:
-                markPositionOffset = new Vector3
-                {
-                    z = markContainer.transform.localPosition.z - square.transform.localScale.z
-                };
-                break;
-            case SquareMarkLocation.Left:
-                markPositionOffset = new Vector3
-                {
-                    x = markContainer.transform.localPosition.x - square.transform.localScale.x
-                };
-                break;
-            case SquareMarkLocation.Right:
-                markPositionOffset = new Vector3
-                {
-                    x = markContainer.transform.localPosition.x + square.transform.localScale.x
-                };
-                break;
-        }
-
-        markContainer.transform.localPosition = markPositionOffset;
+        markContainer.transform.localRotation = Quaternion.Euler(markLocation == SquareMarkLocation.Top ? -90f : 90f, 0f, markLocation == SquareMarkLocation.Right ? 180f: 0f);
+        SetMarkContainerTextMesh(markContainer, square.GetComponent<Square>().GetCoordinates(), markLocation);
+        markContainer.transform.localPosition = SetMarkContainerPosition(markContainer.transform.localPosition, square.transform.localScale, markLocation);
     }
 
-    private string SetMarkContainerText(GameObject square, SquareMarkLocation markLocation)
+    private void SetMarkContainerTextMesh(GameObject markContainer, Coord squareCoords, SquareMarkLocation markLocation)
     {
+        var markContainerTextMesh = markContainer.GetComponent<TextMesh>();
+        markContainerTextMesh.fontSize = BoardConfiguration.BorderMarksFontSize;
+        markContainerTextMesh.text = SetMarkContainerText(squareCoords, markLocation);
+        markContainerTextMesh.alignment = TextAlignment.Center;
+        markContainerTextMesh.anchor = TextAnchor.MiddleCenter;
+    }
+
+    private string SetMarkContainerText(Coord squareCoords, SquareMarkLocation markLocation)
+    {
+        string markText = string.Empty;
+
         if (markLocation == SquareMarkLocation.Top || markLocation == SquareMarkLocation.Bottom)
         {
-            return square.GetComponent<Square>().GetCoordinates().Column.ToString();
+            markText = squareCoords.Column.ToString();
         }
         else if (markLocation == SquareMarkLocation.Right || markLocation == SquareMarkLocation.Left)
         {
-            return square.GetComponent<Square>().GetCoordinates().Row.ToString();
+            markText = squareCoords.Row.ToString();
         }
 
-        return string.Empty;
+        return markText;
+    }
+
+    private Vector3 SetMarkContainerPosition(Vector3 markContainerLocalPosition, Vector3 squareLocalScale, SquareMarkLocation markLocation)
+    {
+        switch (markLocation)
+        {
+            case SquareMarkLocation.Top:
+                markContainerLocalPosition.z += squareLocalScale.z;
+                break;
+
+            case SquareMarkLocation.Bottom:
+                markContainerLocalPosition.z -= squareLocalScale.z;
+                break;
+
+            case SquareMarkLocation.Left:
+                markContainerLocalPosition.x -= squareLocalScale.x;
+                break;
+
+            case SquareMarkLocation.Right:
+                markContainerLocalPosition.x += squareLocalScale.x;
+                break;
+        }
+
+        return markContainerLocalPosition;
     }
 }
