@@ -149,7 +149,7 @@ public class BoardGenerator : MonoBehaviour
             z = square.transform.localScale.z / 10f
         };
 
-        markContainer.transform.localRotation = Quaternion.Euler(markLocation == SquareMarkLocation.Top ? -90f : 90f, 0f, markLocation == SquareMarkLocation.Right ? 180f: 0f);
+        markContainer.transform.localRotation = Quaternion.Euler(90f, markLocation == SquareMarkLocation.Bottom ? 0f : 180f, markLocation == SquareMarkLocation.Right ? 180f: 0f);
         SetMarkContainerTextMesh(markContainer, square.GetComponent<Square>().GetCoordinates(), markLocation);
         markContainer.transform.localPosition = SetMarkContainerPosition(markContainer.transform.localPosition, square.transform.localScale, markLocation);
     }
