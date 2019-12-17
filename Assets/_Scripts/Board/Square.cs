@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class Square : MonoBehaviour
 {
-    private Coord _coord;
+    private Coords _coord;
 
-    public bool IsOccupied { get; set; }
+    internal bool IsOccupied { get; set; }
 
     internal List<SquareMarkOrientation> SquareMarkOrientationFlags { get; private set; }
 
     internal void SetCoordinates(char row, char column)
     {
-        _coord = new Coord(row, column);
+        _coord = new Coords(row, column);
         SetSquareTextSymbolFlat();
     }
 
-    internal Coord GetCoordinates()
+    internal Coords GetCoordinates()
     {
         return _coord;
     }

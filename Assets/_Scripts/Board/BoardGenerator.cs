@@ -154,7 +154,7 @@ public class BoardGenerator : MonoBehaviour
         markContainer.transform.localPosition = SetMarkContainerPosition(markContainer.transform.localPosition, square.transform.localScale, markLocation);
     }
 
-    private void SetMarkContainerTextMesh(GameObject markContainer, Coord squareCoords, SquareMarkLocation markLocation)
+    private void SetMarkContainerTextMesh(GameObject markContainer, Coords squareCoords, SquareMarkLocation markLocation)
     {
         var markContainerTextMesh = markContainer.GetComponent<TextMesh>();
         markContainerTextMesh.fontSize = BoardConfiguration.BorderMarksFontSize;
@@ -163,7 +163,7 @@ public class BoardGenerator : MonoBehaviour
         markContainerTextMesh.anchor = TextAnchor.MiddleCenter;
     }
 
-    private string SetMarkContainerText(Coord squareCoords, SquareMarkLocation markLocation)
+    private string SetMarkContainerText(Coords squareCoords, SquareMarkLocation markLocation)
     {
         string markText = string.Empty;
 

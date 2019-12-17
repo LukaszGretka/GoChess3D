@@ -1,7 +1,13 @@
-﻿namespace Assets._Scripts.Abstract
+﻿using Assets._Scripts.Pieces;
+
+namespace Assets._Scripts.Abstract
 {
-    public interface IPiece
+    internal interface IPiece
     {
         string Name { get; }
+
+        PieceColor PieceColor { get; }
+        
+        bool IsSelected { get; set; }
     }
 }

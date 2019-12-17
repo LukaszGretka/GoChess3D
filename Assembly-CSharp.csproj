@@ -67,13 +67,19 @@
     <Compile Include="Assets\_Scripts\Abstract\IPieceMovement.cs" />
     <Compile Include="Assets\_Scripts\Board\BoardConfiguration.cs" />
     <Compile Include="Assets\_Scripts\Board\BoardGenerator.cs" />
-    <Compile Include="Assets\_Scripts\Board\Models\Coord.cs" />
+    <Compile Include="Assets\_Scripts\Board\Models\Coords.cs" />
     <Compile Include="Assets\_Scripts\Board\Square.cs" />
     <Compile Include="Assets\_Scripts\Board\SquareMarkingFlags.cs" />
     <Compile Include="Assets\_Scripts\Configuration\GameObjectNames.cs" />
     <Compile Include="Assets\_Scripts\Helpers\GameObjectHelper.cs" />
     <Compile Include="Assets\_Scripts\Logic\PiecesMovement\KingMovement.cs" />
+    <Compile Include="Assets\_Scripts\Movement\IBasicMovement.cs" />
+    <Compile Include="Assets\_Scripts\Movement\MovementType.cs" />
     <Compile Include="Assets\_Scripts\Pieces\King.cs" />
+    <Compile Include="Assets\_Scripts\Pieces\Knight.cs" />
+    <Compile Include="Assets\_Scripts\Pieces\PieceColor.cs" />
+    <Compile Include="Assets\_Scripts\Pieces\PieceSpawnerManager.cs" />
+    <Compile Include="Assets\_Scripts\Pieces\Queen.cs" />
     <Reference Include="UnityEngine.ARModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.2.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.ARModule.dll</HintPath>
     </Reference>
