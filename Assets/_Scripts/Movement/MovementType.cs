@@ -3,6 +3,7 @@
     internal enum MovementType
     {
         Diagonaly,
-        Derpendicularly
+        Derpendicularly,
+        Knight,
     }
 }

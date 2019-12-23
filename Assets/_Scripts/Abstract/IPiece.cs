@@ -1,4 +1,4 @@
-﻿using Assets._Scripts.Pieces;
+﻿using Assets._Scripts.Pieces.Enums;
 
 namespace Assets._Scripts.Abstract
 {
@@ -6,8 +6,6 @@ namespace Assets._Scripts.Abstract
     {
         string Name { get; }
 
-        PieceColor PieceColor { get; }
-        
-        bool IsSelected { get; set; }
+        PieceColor PieceColor { get; set; }
     }
 }

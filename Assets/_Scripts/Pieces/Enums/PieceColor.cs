@@ -1,4 +1,4 @@
-﻿namespace Assets._Scripts.Pieces
+﻿namespace Assets._Scripts.Pieces.Enums
 {
     internal enum PieceColor
     {

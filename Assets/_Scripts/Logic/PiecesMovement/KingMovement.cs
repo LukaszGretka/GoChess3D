@@ -1,7 +1,7 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Board.Models;
 using Assets._Scripts.Movement;
-using Assets._Scripts.Pieces;
+using Assets._Scripts.Pieces.Enums;
 using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement
@@ -13,6 +13,8 @@ namespace Assets._Scripts.Logic.PiecesMovement
         public bool AbleToMoveBackward => true;
 
         public Coords CurrentPosition { get; protected set; }
+
+        public bool IsSelected { get; set; } = false;
 
         public bool CheckIfMovePossible()
         {
