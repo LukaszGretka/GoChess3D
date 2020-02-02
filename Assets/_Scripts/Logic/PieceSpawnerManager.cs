@@ -17,8 +17,6 @@ namespace Assets._Scripts.Logic
     {
         private const string SQUARE_TAG_NAME = "Square";
 
-        public GameObject testKing; //TODO | DELETE IF AFTER TESTS (should be get from resorces)
-
         private void Start()
         {
             SpawnPiecesAtDefaultPositions();
@@ -49,6 +47,10 @@ namespace Assets._Scripts.Logic
             {
                 SpawnPiece<King>(spawningSquares, (PieceColor)currentPieceColor);
                 SpawnPiece<Queen>(spawningSquares, (PieceColor)currentPieceColor);
+                SpawnPiece<Bishop>(spawningSquares, (PieceColor)currentPieceColor);
+                SpawnPiece<Knight>(spawningSquares, (PieceColor)currentPieceColor);
+                SpawnPiece<Rook>(spawningSquares, (PieceColor)currentPieceColor);
+                SpawnPiece<Pawn>(spawningSquares, (PieceColor)currentPieceColor);
             }
         }
 
@@ -60,8 +62,10 @@ namespace Assets._Scripts.Logic
             {
                 Transform spawnerSquareTransform = GetSpawnerSquareTransform(squares, pieceCoords);
                 var pieceGameObject = Resources.Load($"{Path.PiecesPrefabsPath}{typeof(T).Name}");
-                var spawnedPiece = Instantiate(pieceGameObject, spawnerSquareTransform.localPosition, Quaternion.identity, spawnerSquareTransform);
-                var component = (spawnedPiece as GameObject).AddComponent<T>();
+                var spawnedPiece = (GameObject)Instantiate(pieceGameObject, spawnerSquareTransform.localPosition, Quaternion.identity, spawnerSquareTransform);
+                spawnedPiece.transform.localScale = new Vector3(spawnerSquareTransform.localScale.x / 2f, spawnerSquareTransform.localScale.y * 10f, spawnerSquareTransform.localScale.z / 2f);
+                spawnedPiece.transform.localPosition = Vector3.up;
+                var component = spawnedPiece.AddComponent<T>();
                 component.PieceColor = pieceColor;
             }
         }
