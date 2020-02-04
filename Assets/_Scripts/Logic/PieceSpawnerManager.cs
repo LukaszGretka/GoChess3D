@@ -15,7 +15,9 @@ namespace Assets._Scripts.Logic
     /// </summary>
     internal class PieceSpawnerManager : MonoBehaviour
     {
-        private const string SQUARE_TAG_NAME = "Square";
+        private const string SquareNameTag = "Square";
+        private const string BlackPieceMaterialName = "BlackPiecesMaterial";
+        private const string WhitePieceMaterialName = "WhitePiecesMaterial";
 
         private void Start()
         {
@@ -27,11 +29,11 @@ namespace Assets._Scripts.Logic
         /// </summary>
         internal void SpawnPiecesAtDefaultPositions()
         {
-            IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SQUARE_TAG_NAME);
+            IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SquareNameTag);
 
             if (!squaredTaggedGameObjects.Any())
             {
-                Debug.LogError($"Can not find any object with tag {SQUARE_TAG_NAME}");
+                Debug.LogError($"Can not find any object with tag {SquareNameTag}");
                 return;
             }
 
@@ -60,13 +62,14 @@ namespace Assets._Scripts.Logic
 
             foreach (Coords pieceCoords in pieceBoardCoords)
             {
-                Transform spawnerSquareTransform = GetSpawnerSquareTransform(squares, pieceCoords);
-                var pieceGameObject = Resources.Load($"{Path.PiecesPrefabsPath}{typeof(T).Name}");
-                var spawnedPiece = (GameObject)Instantiate(pieceGameObject, spawnerSquareTransform.localPosition, Quaternion.identity, spawnerSquareTransform);
-                spawnedPiece.transform.localScale = new Vector3(spawnerSquareTransform.localScale.x / 2f, spawnerSquareTransform.localScale.y * 10f, spawnerSquareTransform.localScale.z / 2f);
-                spawnedPiece.transform.localPosition = Vector3.up;
-                var component = spawnedPiece.AddComponent<T>();
-                component.PieceColor = pieceColor;
+                var pieceGameObjectResource = Resources.Load($"{Path.PiecesPrefabsPath}{typeof(T).Name}");
+                var spawnedPiece = SpawnPieceAtDefaultSquare(squares, pieceCoords, pieceGameObjectResource);
+
+                var pieceAttachedScript = spawnedPiece.AddComponent<T>();
+                pieceAttachedScript.PieceColor = pieceColor;
+                SetSpawnedPieceRendererColor(spawnedPiece);
+
+                spawnedPiece.transform.localRotation = Quaternion.Euler(default, pieceAttachedScript.PieceColor == PieceColor.White ? 180f : default , default);
             }
         }
 
@@ -111,9 +114,30 @@ namespace Assets._Scripts.Logic
             return coords;
         }
 
+        private GameObject SpawnPieceAtDefaultSquare(IEnumerable<Square> squares, Coords pieceCoords, UnityEngine.Object pieceGameObjectResource)
+        {
+            Transform spawnerSquareTransform = GetSpawnerSquareTransform(squares, pieceCoords);
+            var spawnedPiece = (GameObject)Instantiate(pieceGameObjectResource, spawnerSquareTransform.localPosition, Quaternion.identity, spawnerSquareTransform);
+            spawnedPiece.transform.localScale = new Vector3(spawnerSquareTransform.localScale.x / 2f, spawnerSquareTransform.localScale.y * 10f, spawnerSquareTransform.localScale.z / 2f);
+            spawnedPiece.transform.localPosition = Vector3.up;
+
+            return spawnedPiece;
+        }
+
         private Transform GetSpawnerSquareTransform(IEnumerable<Square> squares, Coords coords)
         {
             return squares.Where(square => square.GetCoordinates().Column.Equals(coords.Column) && square.GetCoordinates().Row.Equals(coords.Row)).SingleOrDefault().gameObject.transform;
+        }
+
+        private void SetSpawnedPieceRendererColor(GameObject spawnedPiece)
+        {
+            var materialName = spawnedPiece.GetComponent<IPiece>().PieceColor == PieceColor.White ? WhitePieceMaterialName : BlackPieceMaterialName;
+            var resourceMaterial = Resources.Load($"{Path.PiecesMaterialsPath}{materialName}");
+
+            if (resourceMaterial is null)
+                Debug.LogError($"No material has been found to be attached to {spawnedPiece.name}");
+
+            spawnedPiece.GetComponent<Renderer>().material = resourceMaterial as Material;
         }
     }
 }
