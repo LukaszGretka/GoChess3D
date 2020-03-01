@@ -2,7 +2,7 @@
 
 namespace Assets._Scripts.Abstract
 {
-    internal interface IPiece
+    internal interface IPiece : IPieceMovement
     {
         string Name { get; }
 

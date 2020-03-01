@@ -1,14 +1,13 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Board.Models;
 using Assets._Scripts.Configuration;
-using Assets._Scripts.Pieces;
 using Assets._Scripts.Pieces.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets._Scripts.Logic
+namespace Assets._Scripts.Pieces.Logic
 {
     /// <summary>
     /// Contains various scenarios for pieces spawn configuration
@@ -66,6 +65,7 @@ namespace Assets._Scripts.Logic
                 var spawnedPiece = SpawnPieceAtDefaultSquare(squares, pieceCoords, pieceGameObjectResource);
 
                 var pieceAttachedScript = spawnedPiece.AddComponent<T>();
+
                 pieceAttachedScript.PieceColor = pieceColor;
                 SetSpawnedPieceRendererColor(spawnedPiece);
 

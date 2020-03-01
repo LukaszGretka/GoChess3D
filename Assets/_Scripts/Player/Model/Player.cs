@@ -1,6 +1,7 @@
 ﻿using Assets._Scripts.Pieces.Enums;
+using UnityEngine;
 
-public class Player
+public class Player : MonoBehaviour
 {
     public string Name { get; set; }
 
