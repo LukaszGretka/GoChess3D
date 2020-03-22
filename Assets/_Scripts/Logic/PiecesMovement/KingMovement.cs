@@ -12,8 +12,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public bool AbleToMoveBackward => true;
 
-        public Coords CurrentPosition { get; protected set; }
-       
+        public Coords CurrentPosition { get; protected set; }  
 
         public bool CheckIfMovePossible()
         {

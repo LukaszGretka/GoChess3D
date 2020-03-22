@@ -37,7 +37,7 @@ public class PlayerController : Player
 
                 if (hitPieceIPieceComponent is null)
                 {
-                    Debug.LogError("No IPiece attached to hit object");
+                    Debug.LogWarning($"No IPiece attached to hit object. Object name: {hitPiece.name}");
                     return;
                 }
 

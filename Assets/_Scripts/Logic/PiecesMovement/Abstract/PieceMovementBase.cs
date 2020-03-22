@@ -1,4 +1,5 @@
 ﻿using Assets._Scripts.Abstract;
+using Assets._Scripts.Pieces.Helpers;
 using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement.Abstract
@@ -12,14 +13,15 @@ namespace Assets._Scripts.Logic.PiecesMovement.Abstract
             IsSelected = true;
             var piece = pieceGameObject.GetComponent<IPiece>();
 
-            Debug.Log($"Selected piece: {piece.Name}, {piece.PieceColor}");
+            pieceGameObject.GetComponent<Renderer>().material.color = Color.red;
         }
 
         public void HandlePieceDeselection(GameObject pieceGameObject)
         {
             IsSelected = false;
+            PieceHelper.SetDefaultPieceMaterial(pieceGameObject);
+
             var piece = pieceGameObject.GetComponent<IPiece>();
-            Debug.Log($"Deselected piece: {piece.Name}, {piece.PieceColor}");
         }
     }
 }

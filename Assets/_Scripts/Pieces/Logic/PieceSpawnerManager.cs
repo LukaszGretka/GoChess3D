@@ -2,6 +2,7 @@
 using Assets._Scripts.Board.Models;
 using Assets._Scripts.Configuration;
 using Assets._Scripts.Pieces.Enums;
+using Assets._Scripts.Pieces.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace Assets._Scripts.Pieces.Logic
                 var pieceAttachedScript = spawnedPiece.AddComponent<T>();
 
                 pieceAttachedScript.PieceColor = pieceColor;
-                SetSpawnedPieceRendererColor(spawnedPiece);
+                PieceHelper.SetDefaultPieceMaterial(spawnedPiece);
 
                 spawnedPiece.transform.localRotation = Quaternion.Euler(default, pieceAttachedScript.PieceColor == PieceColor.White ? 180f : default , default);
             }
@@ -127,17 +128,6 @@ namespace Assets._Scripts.Pieces.Logic
         private Transform GetSpawnerSquareTransform(IEnumerable<Square> squares, Coords coords)
         {
             return squares.Where(square => square.GetCoordinates().Column.Equals(coords.Column) && square.GetCoordinates().Row.Equals(coords.Row)).SingleOrDefault().gameObject.transform;
-        }
-
-        private void SetSpawnedPieceRendererColor(GameObject spawnedPiece)
-        {
-            var materialName = spawnedPiece.GetComponent<IPiece>().PieceColor == PieceColor.White ? WhitePieceMaterialName : BlackPieceMaterialName;
-            var resourceMaterial = Resources.Load($"{Path.PiecesMaterialsPath}{materialName}");
-
-            if (resourceMaterial is null)
-                Debug.LogError($"No material has been found to be attached to {spawnedPiece.name}");
-
-            spawnedPiece.GetComponent<Renderer>().material = resourceMaterial as Material;
         }
     }
 }
