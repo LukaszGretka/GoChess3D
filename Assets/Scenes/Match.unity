@@ -318,7 +318,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497d9c62738215e4cb68cb2e757308e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerName: Player 2
   PlayerPieceColor: 1
 --- !u!1 &519420028
 GameObject:
@@ -332,7 +331,7 @@ GameObject:
   - component: {fileID: 519420031}
   m_Layer: 0
   m_Name: WhitePlayerCamera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -407,7 +406,7 @@ GameObject:
   - component: {fileID: 1629473678}
   m_Layer: 0
   m_Name: BlackPlayerCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -481,8 +480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497d9c62738215e4cb68cb2e757308e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerName: 
-  PlayerPieceColor: 0
+  PlayerPieceColor: 1
 --- !u!1 &1737671172
 GameObject:
   m_ObjectHideFlags: 0
@@ -559,7 +557,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497d9c62738215e4cb68cb2e757308e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerName: Player 1
   PlayerPieceColor: 0
 --- !u!114 &2084432746
 MonoBehaviour:
@@ -573,3 +570,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d69087e7340676648b252959f9a831ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Name>k__BackingField: 
+  <PieceColor>k__BackingField: 0

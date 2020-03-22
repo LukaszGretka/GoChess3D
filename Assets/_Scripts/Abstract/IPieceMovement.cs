@@ -1,6 +1,7 @@
 ﻿using Assets._Scripts.Board.Models;
 using Assets._Scripts.Movement;
 using Assets._Scripts.Pieces.Enums;
+using UnityEngine;
 
 namespace Assets._Scripts.Abstract
 {
@@ -13,5 +14,9 @@ namespace Assets._Scripts.Abstract
         void MakeMove();
 
         Coords CurrentPosition { get; }
+
+        void HandlePieceSelection(GameObject pieceGameObject);
+
+        void HandlePieceDeselection(GameObject pieceGameObject);
     }
 }

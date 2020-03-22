@@ -1,9 +1,9 @@
 ﻿using Assets._Scripts.Pieces.Enums;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public abstract class Player : MonoBehaviour
 {
-    public string Name { get; set; }
+    public string Name { get; protected set; }
 
-    public PieceColor PieceColor { get; set; }
+    public PieceColor PieceColor { get; protected set; }
 }

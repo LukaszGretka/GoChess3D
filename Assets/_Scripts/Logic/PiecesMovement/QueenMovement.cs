@@ -1,19 +1,17 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Board.Models;
+using Assets._Scripts.Logic.PiecesMovement.Abstract;
 using Assets._Scripts.Movement;
 using Assets._Scripts.Pieces.Enums;
 using System;
-using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement
 {
-    internal abstract class QueenMovement : MonoBehaviour, IPieceMovement
+    internal abstract class QueenMovement: PieceMovementBase, IPieceMovement
     {
-        public bool IsSelected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public Coords CurrentPosition => throw new NotImplementedException();
 
-        public MovementType MovementType => throw new NotImplementedException();
+        public MovementType MovementType => MovementType.Derpendicularly | MovementType.Diagonaly;
 
         public bool AbleToMoveBackward => true;
 

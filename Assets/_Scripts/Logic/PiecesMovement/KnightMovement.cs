@@ -1,28 +1,31 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Board.Models;
+using Assets._Scripts.Logic.PiecesMovement.Abstract;
 using Assets._Scripts.Movement;
 using Assets._Scripts.Pieces.Enums;
 using System;
-using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement
 {
-    internal abstract class KnightMovement : MonoBehaviour, IPieceMovement
+    internal abstract class KnightMovement : PieceMovementBase, IPieceMovement
     {
-        public bool IsSelected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Coords CurrentPosition { get; private set; } // should be assign in every MakeMove method
 
-        public Coords CurrentPosition => throw new NotImplementedException();
+        public MovementType MovementType => MovementType.Knight;
 
-        public MovementType MovementType => throw new NotImplementedException();
-
-        public bool AbleToMoveBackward => throw new NotImplementedException();
+        public bool AbleToMoveBackward => true;
 
         public bool CheckIfMovePossible()
         {
             throw new NotImplementedException();
         }
 
-        public void MakeMove()
+        public void HandlePieceSelection()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void MakeMove() //proably need coords in parameter - will see
         {
             throw new NotImplementedException();
         }
