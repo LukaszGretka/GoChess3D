@@ -1,7 +1,7 @@
 ﻿using Assets._Scripts.Pieces.Enums;
-using UnityEngine;
+using Mirror;
 
-public abstract class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     public string Name { get; protected set; }
 

@@ -19,9 +19,10 @@ public class PlayerController : Player
         PieceColor = PlayerPieceColor;
     }
 
-    void Update()
+    private void Update()
     {
-        SelectPiece();
+        if(isLocalPlayer)
+            SelectPiece();
     }
 
     private void SelectPiece()
@@ -66,5 +67,14 @@ public class PlayerController : Player
                 }
             }
         }
+    }
+
+    private void MakeMove()
+    {
+        // 1. Get piece which is selected.
+        // 2. Calculate possibilities of movement.
+        // 3. Perform Piece movement.
+        // 4. Deselect moved piece.
+        // 5. Auto end of player turn.
     }
 }
