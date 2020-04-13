@@ -3,7 +3,12 @@ guid: 4a9476c8dfaaeba4ba0da24341060f8c
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - transport: {instanceID: 0}
+  - authenticator: {instanceID: 0}
+  - playerPrefab: {instanceID: 0}
+  - WhitePlayerSpawnPoint: {instanceID: 0}
+  - BlackPlayerSpawnPoint: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

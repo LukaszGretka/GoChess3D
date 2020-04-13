@@ -1,10 +1,11 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Pieces.Helpers;
+using Mirror;
 using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement.Abstract
 {
-    abstract class PieceMovementBase : MonoBehaviour
+    abstract class PieceMovementBase : NetworkBehaviour
     {
         public bool IsSelected { get; set; }
 

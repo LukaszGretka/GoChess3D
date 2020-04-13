@@ -3,6 +3,7 @@ using Assets._Scripts.Board.Models;
 using Assets._Scripts.Configuration;
 using Assets._Scripts.Pieces.Enums;
 using Assets._Scripts.Pieces.Helpers;
+using Mirror;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,27 +14,24 @@ namespace Assets._Scripts.Pieces.Logic
     /// <summary>
     /// Contains various scenarios for pieces spawn configuration
     /// </summary>
-    internal class PieceSpawnerManager : MonoBehaviour
+    internal class PieceSpawnerManager : NetworkBehaviour
     {
-        private const string SquareNameTag = "Square";
+        private const string SquareTagName = "Square";
+        private const string PieceTagName = "Piece";
         private const string BlackPieceMaterialName = "BlackPiecesMaterial";
         private const string WhitePieceMaterialName = "WhitePiecesMaterial";
-
-        private void Start()
-        {
-            SpawnPiecesAtDefaultPositions();
-        }
 
         /// <summary>
         /// Default scenario for standard cheess game
         /// </summary>
-        internal void SpawnPiecesAtDefaultPositions()
+        [ClientRpc]
+        internal void RpcSpawnPiecesAtDefaultPositions()
         {
-            IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SquareNameTag);
+            IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SquareTagName);
 
             if (!squaredTaggedGameObjects.Any())
             {
-                Debug.LogError($"Can not find any object with tag {SquareNameTag}");
+                Debug.LogError($"Can not find any object with tag {SquareTagName}");
                 return;
             }
 
@@ -53,6 +51,17 @@ namespace Assets._Scripts.Pieces.Logic
                 SpawnPiece<Knight>(spawningSquares, (PieceColor)currentPieceColor);
                 SpawnPiece<Rook>(spawningSquares, (PieceColor)currentPieceColor);
                 SpawnPiece<Pawn>(spawningSquares, (PieceColor)currentPieceColor);
+            }
+        }
+
+        [Server]
+        internal void DespawnAllPieces()
+        {
+            IEnumerable<GameObject> pieces = GameObject.FindGameObjectsWithTag(PieceTagName);
+
+            foreach(var piece in pieces)
+            {
+                Destroy(piece);
             }
         }
 

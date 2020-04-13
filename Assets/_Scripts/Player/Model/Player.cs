@@ -3,7 +3,7 @@ using Mirror;
 
 public class Player : NetworkBehaviour
 {
-    public string Name { get; protected set; }
+    public string Name { get; set; }
 
-    public PieceColor PieceColor { get; protected set; }
+    public PieceColor PieceColor { get; set; }
 }

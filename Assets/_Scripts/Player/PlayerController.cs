@@ -1,35 +1,44 @@
 ﻿using Assets._Scripts.Abstract;
-using Assets._Scripts.Pieces.Enums;
 using UnityEngine;
 
 public class PlayerController : Player
 {
-    public PieceColor PlayerPieceColor;
-
     private IPieceMovement _lastSelectedPieceMovementComponent;
     private GameObject _lastSelectedPiece;
 
-    private Camera _playerCamera;
-
-    private void Awake()
+    public override void OnStartLocalPlayer()
     {
-        _playerCamera = GetComponentInChildren<Camera>();
+        base.OnStartLocalPlayer();
+        SetCameraSettings();
+
+        var networkManager = FindObjectOfType<NetworkManagerGoChess3D>();
+
+        if (networkManager != null)
+            PieceColor = transform.position.z == networkManager.WhitePlayerSpawnPoint.position.z ?
+                Assets._Scripts.Pieces.Enums.PieceColor.White : Assets._Scripts.Pieces.Enums.PieceColor.Black;
 
         Name = "Default Player"; // TODO should be set by user in future
-        PieceColor = PlayerPieceColor;
     }
 
     private void Update()
     {
-        if(isLocalPlayer)
+        if (isLocalPlayer)
             SelectPiece();
+    }
+
+    private void SetCameraSettings()
+    {
+        Camera.main.orthographic = false;
+        Camera.main.transform.SetParent(transform);
+        Camera.main.transform.localPosition = Vector3.zero;
+        Camera.main.transform.localEulerAngles = new Vector3(45f, 0f, 0f);
     }
 
     private void SelectPiece()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Ray rayFromCam = _playerCamera.ScreenPointToRay(Input.mousePosition);
+            Ray rayFromCam = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(rayFromCam, out RaycastHit rayHit))
             {
