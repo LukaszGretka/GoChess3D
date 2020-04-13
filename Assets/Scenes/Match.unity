@@ -480,8 +480,8 @@ MonoBehaviour:
   startOnHeadless: 1
   showDebugMessages: 0
   serverTickRate: 30
-  offlineScene: 
-  onlineScene: 
+  offlineScene: Assets/Scenes/MainMenu.unity
+  onlineScene: Assets/Scenes/Match.unity
   transport: {fileID: 1081793139}
   networkAddress: localhost
   maxConnections: 4

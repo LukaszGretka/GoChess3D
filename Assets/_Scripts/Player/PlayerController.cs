@@ -17,7 +17,7 @@ public class PlayerController : Player
             PieceColor = transform.position.z == networkManager.WhitePlayerSpawnPoint.position.z ?
                 Assets._Scripts.Pieces.Enums.PieceColor.White : Assets._Scripts.Pieces.Enums.PieceColor.Black;
 
-        Name = "Default Player"; // TODO should be set by user in future
+        Name = MainMenuManager.PlayerName ?? "Player"; // TODO | Change the implementation because it's not very cleaver
     }
 
     private void Update()
