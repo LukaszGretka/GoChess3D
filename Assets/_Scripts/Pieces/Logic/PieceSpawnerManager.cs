@@ -18,14 +18,22 @@ namespace Assets._Scripts.Pieces.Logic
     {
         private const string SquareTagName = "Square";
         private const string PieceTagName = "Piece";
-        private const string BlackPieceMaterialName = "BlackPiecesMaterial";
-        private const string WhitePieceMaterialName = "WhitePiecesMaterial";
+
+        private void Awake()
+        {
+            NetworkManagerGoChess3D.OnPlayersLoaded += NetworkManagerGoChess3D_OnPlayersLoaded;
+        }
+
+        private void NetworkManagerGoChess3D_OnPlayersLoaded()
+        {
+            RpcSpawnPiecesAtDefaultPositions();
+        }
 
         /// <summary>
         /// Default scenario for standard cheess game
         /// </summary>
         [ClientRpc]
-        internal void RpcSpawnPiecesAtDefaultPositions()
+        private void RpcSpawnPiecesAtDefaultPositions()
         {
             IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SquareTagName);
 

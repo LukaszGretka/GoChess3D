@@ -8,6 +8,7 @@ TagManager:
   - WhitePlayer
   - Square
   - Piece
+  - GUIManager
   layers:
   - Default
   - TransparentFX

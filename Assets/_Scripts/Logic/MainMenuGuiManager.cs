@@ -4,15 +4,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenuManager : MonoBehaviour
+public class MainMenuGuiManager : MonoBehaviour
 {
-    public static string PlayerName;
+    public string PlayerName;
     public Text playerInput;
 
     public void OnClick_ConnectButton()
     {
         PlayerName = playerInput.text; // add validation
-        SceneManager.LoadScene("Match");
+        DontDestroyOnLoad(this.gameObject);
+        SceneManager.LoadScene("OfflineScene");
     }
 }
 

@@ -1,10 +1,18 @@
 ﻿using Assets._Scripts.Abstract;
+using Mirror;
 using UnityEngine;
 
-public class PlayerController : Player
+public class PlayerController : NetworkBehaviour
 {
     private IPieceMovement _lastSelectedPieceMovementComponent;
     private GameObject _lastSelectedPiece;
+
+    private Player _player;
+
+    private void Awake()
+    {
+        _player = GetComponent<Player>();
+    }
 
     public override void OnStartLocalPlayer()
     {
@@ -14,10 +22,8 @@ public class PlayerController : Player
         var networkManager = FindObjectOfType<NetworkManagerGoChess3D>();
 
         if (networkManager != null)
-            PieceColor = transform.position.z == networkManager.WhitePlayerSpawnPoint.position.z ?
+            _player.PieceColor = transform.position.z == networkManager.WhitePlayerSpawnPoint.position.z ?
                 Assets._Scripts.Pieces.Enums.PieceColor.White : Assets._Scripts.Pieces.Enums.PieceColor.Black;
-
-        Name = MainMenuManager.PlayerName ?? "Player"; // TODO | Change the implementation because it's not very cleaver
     }
 
     private void Update()
@@ -51,7 +57,7 @@ public class PlayerController : Player
                     return;
                 }
 
-                if (PieceColor == hitPiece.GetComponent<IPiece>().PieceColor)
+                if (_player.PieceColor == hitPiece.GetComponent<IPiece>().PieceColor)
                 {
                     var hitPieceIPieceMovementComponent = hitPiece.GetComponent<IPieceMovement>();
 

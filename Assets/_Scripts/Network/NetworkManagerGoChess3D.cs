@@ -7,6 +7,9 @@ public class NetworkManagerGoChess3D : NetworkManager
     public Transform WhitePlayerSpawnPoint;
     public Transform BlackPlayerSpawnPoint;
 
+    public delegate void PlayersLoadedHandler();
+    public static event PlayersLoadedHandler OnPlayersLoaded;
+
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         Transform playerSpawnPoint = numPlayers == 0 ? WhitePlayerSpawnPoint : BlackPlayerSpawnPoint;
@@ -16,9 +19,7 @@ public class NetworkManagerGoChess3D : NetworkManager
 
         if (numPlayers == 2)
         {
-            var pieceSpawner = GameObject.Find("BoardSpawnerPoint").GetComponent<PieceSpawnerManager>();
-            if (pieceSpawner != null)
-                pieceSpawner.RpcSpawnPiecesAtDefaultPositions();
+            OnPlayersLoaded.Invoke();
         }
     }
 
