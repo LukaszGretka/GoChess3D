@@ -8,7 +8,9 @@ public class NetworkManagerGoChess3D : NetworkManager
     public Transform BlackPlayerSpawnPoint;
 
     public delegate void PlayersLoadedHandler();
-    public static event PlayersLoadedHandler OnPlayersLoaded;
+    public static event PlayersLoadedHandler OnPlayersConnected;
+
+    private const int MaximumAmountOfPlayers = 2;
 
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
@@ -17,18 +19,9 @@ public class NetworkManagerGoChess3D : NetworkManager
 
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        if (numPlayers == 2)
+        if (numPlayers == MaximumAmountOfPlayers)
         {
-            OnPlayersLoaded.Invoke();
+            OnPlayersConnected.Invoke();
         }
-    }
-
-    public override void OnServerRemovePlayer(NetworkConnection conn, NetworkIdentity player)
-    {
-        var pieceSpawner = GameObject.Find("BoardSpawnerPoint").GetComponent<PieceSpawnerManager>();
-        if (pieceSpawner != null)
-            pieceSpawner.DespawnAllPieces();
-
-        base.OnServerRemovePlayer(conn, player);
     }
 }

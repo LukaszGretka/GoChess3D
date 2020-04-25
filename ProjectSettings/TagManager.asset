@@ -9,6 +9,7 @@ TagManager:
   - Square
   - Piece
   - GUIManager
+  - GameFlowEngine
   layers:
   - Default
   - TransparentFX

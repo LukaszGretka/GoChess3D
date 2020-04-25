@@ -21,7 +21,7 @@ namespace Assets._Scripts.Pieces.Logic
 
         private void Awake()
         {
-            NetworkManagerGoChess3D.OnPlayersLoaded += NetworkManagerGoChess3D_OnPlayersLoaded;
+            NetworkManagerGoChess3D.OnPlayersConnected += NetworkManagerGoChess3D_OnPlayersLoaded;
         }
 
         private void NetworkManagerGoChess3D_OnPlayersLoaded()
