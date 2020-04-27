@@ -23,5 +23,25 @@ public class NetworkManagerGoChess3D : NetworkManager
         {
             OnPlayersConnected.Invoke();
         }
+        else
+        {
+            foreach(var connection in NetworkServer.connections)
+            {
+                connection.Value.identity.GetComponent<PlayerGUI>()
+                    .RpcSetCurrentGameStatus($"Waiting for {MaximumAmountOfPlayers - numPlayers} more player");
+            }
+        }
+    }
+
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        StopClient();
+    }
+
+    public override void OnServerDisconnect(NetworkConnection conn)
+    {
+        base.OnServerDisconnect(conn);
+        StopServer();
     }
 }

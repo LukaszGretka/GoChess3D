@@ -1,15 +1,11 @@
 ﻿using Assets._Scripts.Pieces.Enums;
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerGUI))]
 [RequireComponent(typeof(PlayerController))]
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
-    private void Awake()
-    {
-        Name = GameObject.Find("MainMenuGUIManager")?.GetComponent<MainMenuGuiManager>()?.PlayerName?? string.Empty;
-    }
-
     public string Name { get; set; }
 
     public PieceColor PieceColor { get; set; }

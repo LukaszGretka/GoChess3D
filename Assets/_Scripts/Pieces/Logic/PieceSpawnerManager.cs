@@ -19,9 +19,14 @@ namespace Assets._Scripts.Pieces.Logic
         private const string SquareTagName = "Square";
         private const string PieceTagName = "Piece";
 
-        private void Awake()
+        public override void OnStartClient()
         {
             NetworkManagerGoChess3D.OnPlayersConnected += NetworkManagerGoChess3D_OnPlayersLoaded;
+        }
+
+        private void OnDestroy()
+        {
+            NetworkManagerGoChess3D.OnPlayersConnected -= NetworkManagerGoChess3D_OnPlayersLoaded;
         }
 
         private void NetworkManagerGoChess3D_OnPlayersLoaded()
