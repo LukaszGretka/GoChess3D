@@ -2,11 +2,11 @@
 using Mirror;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerGUI))]
 [RequireComponent(typeof(PlayerController))]
+[RequireComponent(typeof(PlayerGUI))]
 public class Player : NetworkBehaviour
 {
-    public string Name { get; set; }
+    public static string Name { get; set; }
 
-    public PieceColor PieceColor { get; set; }
+    public static PieceColor PieceColor { get; set; }
 }

@@ -1,5 +1,4 @@
-﻿using Assets._Scripts.Logic;
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +21,12 @@ public class PlayerGUI : Player
         _playerRemainTimeTopBarUI = topBarPanel.transform.Find("GameRemainTimeValue").GetComponent<Text>();
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        _playerNameTopBarUI.text = string.IsNullOrEmpty(Name) ? string.Format("{0} player", PieceColor.ToString())
+                                              : Name;
+    }
+
     public void OnDestroy()
     {
         NetworkManagerGoChess3D.OnPlayersConnected -= NetworkManagerGoChess3D_OnPlayersConnected;
@@ -30,7 +35,6 @@ public class PlayerGUI : Player
     private void NetworkManagerGoChess3D_OnPlayersConnected()
     {
         RpcSetCurrentGameStatus("Match will start in the second");
-        RpcSetPlayerName();
         RpcUpdateRemainingTime(200.ToString());
     }
 
@@ -40,8 +44,7 @@ public class PlayerGUI : Player
         _turnInfoTopBarUI.text = gameStatusMessage;  // TODO format it lately
     }
 
-    [ClientRpc]
-    internal void RpcSetPlayerName()
+    internal void SetPlayerName()
     {
         _playerNameTopBarUI.text = string.IsNullOrEmpty(Name) ? string.Format("{0} player", PieceColor.ToString())
                                                               : Name;
