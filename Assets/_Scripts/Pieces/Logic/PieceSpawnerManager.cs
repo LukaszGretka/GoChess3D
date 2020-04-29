@@ -1,6 +1,7 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Board.Models;
 using Assets._Scripts.Configuration;
+using Assets._Scripts.Logic.PiecesMovement.Abstract;
 using Assets._Scripts.Pieces.Enums;
 using Assets._Scripts.Pieces.Helpers;
 using Mirror;
@@ -65,6 +66,8 @@ namespace Assets._Scripts.Pieces.Logic
                 SpawnPiece<Rook>(spawningSquares, (PieceColor)currentPieceColor);
                 SpawnPiece<Pawn>(spawningSquares, (PieceColor)currentPieceColor);
             }
+
+            SetSpawningSquaresAsOccupied(spawningSquares);
         }
 
         [Server]
@@ -72,7 +75,7 @@ namespace Assets._Scripts.Pieces.Logic
         {
             IEnumerable<GameObject> pieces = GameObject.FindGameObjectsWithTag(PieceTagName);
 
-            foreach(var piece in pieces)
+            foreach (var piece in pieces)
             {
                 Destroy(piece);
             }
@@ -90,9 +93,11 @@ namespace Assets._Scripts.Pieces.Logic
                 var pieceAttachedScript = spawnedPiece.AddComponent<T>();
 
                 pieceAttachedScript.PieceColor = pieceColor;
+                (pieceAttachedScript as PieceMovementBase).CurrentPosition = pieceCoords;
+
                 PieceHelper.SetDefaultPieceMaterial(spawnedPiece);
 
-                spawnedPiece.transform.localRotation = Quaternion.Euler(default, pieceAttachedScript.PieceColor == PieceColor.White ? 180f : default , default);
+                spawnedPiece.transform.localRotation = Quaternion.Euler(default, pieceAttachedScript.PieceColor == PieceColor.White ? 180f : default, default);
             }
         }
 
@@ -145,6 +150,11 @@ namespace Assets._Scripts.Pieces.Logic
             spawnedPiece.transform.localPosition = Vector3.up;
 
             return spawnedPiece;
+        }
+
+        private void SetSpawningSquaresAsOccupied(List<Square> squares)
+        {
+            squares.ForEach(square => square.IsOccupied = true);
         }
 
         private Transform GetSpawnerSquareTransform(IEnumerable<Square> squares, Coords coords)

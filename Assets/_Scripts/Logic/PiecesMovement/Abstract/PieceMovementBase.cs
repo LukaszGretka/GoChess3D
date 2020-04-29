@@ -1,12 +1,15 @@
 ﻿using Assets._Scripts.Abstract;
+using Assets._Scripts.Board.Models;
 using Assets._Scripts.Pieces.Helpers;
 using Mirror;
 using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement.Abstract
 {
-    abstract class PieceMovementBase : NetworkBehaviour
+    abstract class PieceMovementBase : MonoBehaviour
     {
+        public Coords CurrentPosition { get; set; }
+
         public bool IsSelected { get; set; }
 
         public void HandlePieceSelection(GameObject pieceGameObject)

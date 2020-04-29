@@ -166,6 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  initialPlayerGameTime: 0
 --- !u!114 &148419264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,8 +194,9 @@ GameObject:
   - component: {fileID: 373663012}
   - component: {fileID: 373663013}
   - component: {fileID: 373663014}
+  - component: {fileID: 373663015}
   m_Layer: 8
-  m_Name: BoardSpawnerPoint
+  m_Name: BoarderManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -262,6 +264,18 @@ MonoBehaviour:
   sceneId: 2777182578
   serverOnly: 0
   m_AssetId: 
+--- !u!114 &373663015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373663010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 544b38c1d51d248438793fdc1f81b886, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &380914272
 GameObject:
   m_ObjectHideFlags: 0

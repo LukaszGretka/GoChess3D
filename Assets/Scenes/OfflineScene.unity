@@ -12143,7 +12143,7 @@ MonoBehaviour:
   showDebugMessages: 0
   serverTickRate: 30
   offlineScene: Assets/Scenes/OfflineScene.unity
-  onlineScene: Assets/Scenes/Match.unity
+  onlineScene: Assets/Scenes/OnlineScene.unity
   transport: {fileID: 1852823507}
   networkAddress: localhost
   maxConnections: 4

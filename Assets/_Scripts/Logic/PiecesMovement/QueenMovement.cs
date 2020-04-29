@@ -4,13 +4,12 @@ using Assets._Scripts.Logic.PiecesMovement.Abstract;
 using Assets._Scripts.Movement;
 using Assets._Scripts.Pieces.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace Assets._Scripts.Logic.PiecesMovement
 {
     internal abstract class QueenMovement: PieceMovementBase, IPieceMovement
     {
-        public Coords CurrentPosition => throw new NotImplementedException();
-
         public MovementType MovementType => MovementType.Derpendicularly | MovementType.Diagonaly;
 
         public bool AbleToMoveBackward => true;
@@ -20,12 +19,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
             throw new NotImplementedException();
         }
 
-        public void MakeMove()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ResetToStartingPosition(PieceColor pieceColor)
+        public IList<Coords> ReturnPossibleMovmentCoords()
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,5 @@
 ﻿using Assets._Scripts.Abstract;
+using Assets._Scripts.Board.Models;
 using Assets._Scripts.Logic.PiecesMovement;
 using Assets._Scripts.Pieces.Enums;
 

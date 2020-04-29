@@ -1,4 +1,5 @@
-﻿using Assets._Scripts.Pieces.Logic;
+﻿using Assets._Scripts.Network.Helpers;
+using Assets._Scripts.Pieces.Logic;
 using Mirror;
 using UnityEngine;
 
@@ -25,11 +26,7 @@ public class NetworkManagerGoChess3D : NetworkManager
         }
         else
         {
-            foreach(var connection in NetworkServer.connections)
-            {
-                connection.Value.identity.GetComponent<PlayerGUI>()
-                    .RpcSetCurrentGameStatus($"Waiting for {MaximumAmountOfPlayers - numPlayers} more player");
-            }
+            NetworkPlayersHelper.UpdateGameStatusForConnectedPlayers($"Waiting for {MaximumAmountOfPlayers - numPlayers} more player to join.");
         }
     }
 

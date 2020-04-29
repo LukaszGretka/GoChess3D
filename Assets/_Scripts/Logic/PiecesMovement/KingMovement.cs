@@ -1,4 +1,5 @@
-﻿using Assets._Scripts.Abstract;
+﻿using System.Collections.Generic;
+using Assets._Scripts.Abstract;
 using Assets._Scripts.Board.Models;
 using Assets._Scripts.Logic.PiecesMovement.Abstract;
 using Assets._Scripts.Movement;
@@ -12,19 +13,12 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public bool AbleToMoveBackward => true;
 
-        public Coords CurrentPosition { get; protected set; }  
-
         public bool CheckIfMovePossible()
         {
             throw new System.NotImplementedException();
         }
 
-        public void MakeMove()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void ResetToStartingPosition(PieceColor pieceColor)
+        public IList<Coords> ReturnPossibleMovmentCoords()
         {
             throw new System.NotImplementedException();
         }

@@ -34,7 +34,6 @@ public class PlayerGUI : Player
 
     private void NetworkManagerGoChess3D_OnPlayersConnected()
     {
-        RpcSetCurrentGameStatus("Match will start in the second");
         RpcUpdateRemainingTime(200.ToString());
     }
 
