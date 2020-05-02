@@ -11,6 +11,9 @@ namespace Assets._Scripts.Network
         [SerializeField]
         internal float initialPlayerGameTime;
 
+        [SyncVar]
+        internal bool FirstTurn = true;
+
         public override void OnStartServer()
         {
             base.OnStartServer();

@@ -1,15 +1,24 @@
 ﻿using Assets._Scripts.Abstract;
-using Assets._Scripts.Board.Models;
 using Assets._Scripts.Logic.PiecesMovement.Abstract;
 using Assets._Scripts.Movement;
+using Assets._Scripts.Network;
 using Assets._Scripts.Pieces.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement
 {
     internal class PawnMovement : PieceMovementBase, IPieceMovement
     {
+        private ServerGameFlowEngine _serverGameFlowEngine;
+
+        private void Start()
+        {
+            _serverGameFlowEngine = GameObject.Find("GameFlowManager").GetComponent<ServerGameFlowEngine>();
+        }
+
         public MovementType MovementType => MovementType.Derpendicularly;
 
         public bool AbleToMoveBackward => false;
@@ -19,9 +28,28 @@ namespace Assets._Scripts.Logic.PiecesMovement
             throw new NotImplementedException();
         }
 
-        public IList<Coords> ReturnPossibleMovmentCoords()
+        public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
-            throw new NotImplementedException();
+            var pieceOnSquareColor = GetComponentInChildren<IPiece>().PieceColor;
+            return _serverGameFlowEngine.FirstTurn ? GetWhitePlayerFirstTurnPossibleMovement(currentSquare, pieceOnSquareColor)
+                                                                    : GetStandardPossibleMovement(currentSquare, pieceOnSquareColor);
+        }
+
+        private IEnumerable<Square> GetWhitePlayerFirstTurnPossibleMovement(Square currentSquare, PieceColor pieceOnSquareColor)
+        {
+            return SquareHelpers.GetLocatedSquares(MovementType, currentSquare)
+                .Where(square => (pieceOnSquareColor == PieceColor.White ?
+                        square.transform.position.z == currentSquare.transform.position.z + 2f 
+                            || square.transform.position.z == currentSquare.transform.position.z + 1f
+                        : square.transform.position.z == currentSquare.transform.position.z - 2f 
+                            || square.transform.position.z == currentSquare.transform.position.z - 1f));
+        }
+        private IEnumerable<Square> GetStandardPossibleMovement(Square currentSquare, PieceColor pieceOnSquareColor)
+        {
+            return SquareHelpers.GetLocatedSquares(MovementType, currentSquare)
+                .Where(square => pieceOnSquareColor == PieceColor.White ?
+                        square.transform.position.z == currentSquare.transform.position.z + 1f
+                        : square.transform.position.z == currentSquare.transform.position.z - 1f);
         }
     }
 }

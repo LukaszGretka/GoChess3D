@@ -19,7 +19,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
             throw new NotImplementedException();
         }
 
-        public IList<Coords> ReturnPossibleMovmentCoords()
+        public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
             throw new NotImplementedException();
         }

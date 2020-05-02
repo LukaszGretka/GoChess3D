@@ -6,7 +6,6 @@ public class PlayerController : Player
 {
     private IPieceMovement _lastSelectedPieceMovementComponent;
     private GameObject _lastSelectedPiece;
-    private GameObject _currentSelectedPiece;
 
     private OnBoardMovementLogic _onBoardMovementLogic;
 
@@ -29,12 +28,7 @@ public class PlayerController : Player
     {
         if (isLocalPlayer && Input.GetMouseButtonDown(0))
         {
-            _currentSelectedPiece = SelectPiece();
-
-            if (_currentSelectedPiece != null)
-            {
-                _onBoardMovementLogic.ShowPossibleMovement(_currentSelectedPiece);
-            }
+            SelectPiece();
         }
     }
 
@@ -46,13 +40,13 @@ public class PlayerController : Player
         Camera.main.transform.localEulerAngles = new Vector3(45f, 0f, 0f);
     }
 
-    private GameObject SelectPiece()
+    private void SelectPiece()
     {
         Ray rayFromCam = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (!Physics.Raycast(rayFromCam, out RaycastHit rayHit))
         {
-            return null;
+            return;
         }
         var hitPiece = rayHit.collider.gameObject;
         var hitPieceIPieceComponent = hitPiece.GetComponent<IPiece>();
@@ -60,12 +54,12 @@ public class PlayerController : Player
         if (hitPieceIPieceComponent is null)
         {
             Debug.LogWarning($"No IPiece attached to hit object. Object name: {hitPiece.name}");
-            return null;
+            return;
         }
 
         if (PieceColor != hitPiece.GetComponent<IPiece>().PieceColor)
         {
-            return null;
+            return;
         }
 
         var hitPieceIPieceMovementComponent = hitPiece.GetComponent<IPieceMovement>();
@@ -73,23 +67,29 @@ public class PlayerController : Player
         if (hitPieceIPieceMovementComponent is null)
         {
             Debug.LogError("No IPieceMovement attached to hit object");
-            return null;
+            return;
         }
 
         if (_lastSelectedPieceMovementComponent != null && hitPieceIPieceMovementComponent.IsSelected == _lastSelectedPieceMovementComponent.IsSelected)
         {
             Debug.Log("Selected the same Piece");
-            return null;
+            return;
         }
 
         if (_lastSelectedPiece is null == false)
+        {
             _lastSelectedPieceMovementComponent.HandlePieceDeselection(_lastSelectedPiece);
+            _onBoardMovementLogic.RemoveBacklightFromSquares();
+        }
 
         hitPieceIPieceMovementComponent.HandlePieceSelection(hitPiece);
         _lastSelectedPieceMovementComponent = hitPieceIPieceMovementComponent;
         _lastSelectedPiece = hitPiece;
 
-        return hitPiece;
+        if (hitPiece != null)
+        {
+            _onBoardMovementLogic.ShowPossibleMovement(hitPiece);
+        }
     }
 
     private void MakeMove()

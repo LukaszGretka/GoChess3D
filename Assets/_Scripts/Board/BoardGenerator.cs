@@ -2,6 +2,7 @@
 using Assets._Scripts.Board.Models;
 using Assets._Scripts.Configuration;
 using Assets._Scripts.Helpers;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardGenerator : MonoBehaviour
@@ -17,6 +18,8 @@ public class BoardGenerator : MonoBehaviour
 
     [SerializeField]
     private Material _boardBorderMaterial;
+
+    internal static List<Square> Squares { get; private set; }
 
     internal void Awake()
     {
@@ -48,6 +51,8 @@ public class BoardGenerator : MonoBehaviour
 
     private void AddFieldsToContainer(Transform containerTransform)
     {
+        Squares = new List<Square>();
+
         Vector3 primarySpawnPoint = new Vector3
         {
             x = _simpleSquare.transform.localScale.x / 2f - BoardConfiguration.BoardHorizontalSize / 2f,
@@ -64,6 +69,7 @@ public class BoardGenerator : MonoBehaviour
             var currentSquareSymbol = BoardConfiguration.AvailableSquareSymbols[horizontalIndex];
             var currentSquareScript = spawnedSquare.AddComponent<Square>();
             SetCurrentSquareBasicComponents(currentSquareScript, BoardConfiguration.AvailableSquareNumbers[0], BoardConfiguration.AvailableSquareSymbols[horizontalIndex], currentSquareMaterial);
+            Squares.Add(currentSquareScript);
 
             for (int verticalIndex = 1; verticalIndex < BoardConfiguration.SquaresVerticalDimension; verticalIndex++)
             {
@@ -73,6 +79,7 @@ public class BoardGenerator : MonoBehaviour
                 var currentSquareNumber = BoardConfiguration.AvailableSquareNumbers[verticalIndex];
                 currentSquareScript = spawnedSquare.AddComponent<Square>();
                 SetCurrentSquareBasicComponents(currentSquareScript, currentSquareNumber, currentSquareSymbol, currentSquareMaterial);
+                Squares.Add(currentSquareScript);
             }
 
             currentSpawnPoint = new Vector3(currentSpawnPoint.x + BoardConfiguration.FieldsSplitDistance, currentSpawnPoint.y, primarySpawnPoint.z);
