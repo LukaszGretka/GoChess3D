@@ -2,6 +2,7 @@
 using Assets._Scripts.Board.Models;
 using Assets._Scripts.Configuration;
 using Assets._Scripts.Helpers;
+using TMPro;
 using UnityEngine;
 
 public class BoardGenerator : MonoBehaviour
@@ -139,7 +140,7 @@ public class BoardGenerator : MonoBehaviour
         string markName = markLocation.Equals(SquareMarkLocation.Top | SquareMarkLocation.Bottom) ?
                                                     GameObjectNames.SquareMarkHorizontal : GameObjectNames.SquareMarkVertical;
 
-        var markContainer = new GameObject(markName, typeof(TextMesh));
+        var markContainer = new GameObject(markName, typeof(TextMeshPro));
         markContainer.AddAsChildrenTo(square);
 
         markContainer.transform.localScale = new Vector3
@@ -156,11 +157,10 @@ public class BoardGenerator : MonoBehaviour
 
     private void SetMarkContainerTextMesh(GameObject markContainer, Coords squareCoords, SquareMarkLocation markLocation)
     {
-        var markContainerTextMesh = markContainer.GetComponent<TextMesh>();
+        var markContainerTextMesh = markContainer.GetComponent<TextMeshPro>();
         markContainerTextMesh.fontSize = BoardConfiguration.BorderMarksFontSize;
         markContainerTextMesh.text = SetMarkContainerText(squareCoords, markLocation);
-        markContainerTextMesh.alignment = TextAlignment.Center;
-        markContainerTextMesh.anchor = TextAnchor.MiddleCenter;
+        markContainerTextMesh.alignment = TextAlignmentOptions.Center;
     }
 
     private string SetMarkContainerText(Coords squareCoords, SquareMarkLocation markLocation)
@@ -199,6 +199,8 @@ public class BoardGenerator : MonoBehaviour
                 markContainerLocalPosition.x += squareLocalScale.x;
                 break;
         }
+
+        markContainerLocalPosition.y += 0.1f;
 
         return markContainerLocalPosition;
     }
