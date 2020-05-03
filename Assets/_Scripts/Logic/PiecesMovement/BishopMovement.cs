@@ -10,7 +10,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 {
     internal abstract class BishopMovement : PieceMovementBase, IPieceMovement
     {
-        public MovementType MovementType => throw new NotImplementedException();
+        public MovementType MovementType => MovementType.Diagonaly;
 
         public bool AbleToMoveBackward => true;
 
@@ -21,7 +21,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
-            throw new NotImplementedException();
+            return SquareHelpers.GetLocatedSquares(MovementType, currentSquare);
         }
     }
 }

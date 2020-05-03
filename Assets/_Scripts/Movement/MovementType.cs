@@ -5,5 +5,6 @@
         Diagonaly,
         Derpendicularly,
         Knight,
+        DiagonalAndDerpendicular
     }
 }

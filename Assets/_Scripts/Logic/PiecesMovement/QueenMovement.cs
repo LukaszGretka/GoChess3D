@@ -10,7 +10,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 {
     internal abstract class QueenMovement: PieceMovementBase, IPieceMovement
     {
-        public MovementType MovementType => MovementType.Derpendicularly | MovementType.Diagonaly;
+        public MovementType MovementType => MovementType.DiagonalAndDerpendicular;
 
         public bool AbleToMoveBackward => true;
 
@@ -21,7 +21,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
-            throw new NotImplementedException();
+            return SquareHelpers.GetLocatedSquares(MovementType, currentSquare);
         }
     }
 }

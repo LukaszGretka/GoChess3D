@@ -14,6 +14,10 @@ internal static class SquareHelpers
                 return GetDerpendicularlyLocatedSquares(relativeSquare);
             case MovementType.Knight:
                 return GetKnightMovementLocatedSquares(relativeSquare);
+            case MovementType.DiagonalAndDerpendicular:
+                return CombinedDiagonalAndDerpendicular(relativeSquare);
+            default:
+                break;
         }
 
         throw new System.NotSupportedException("Invalid value of: " + nameof(movementType));
@@ -33,14 +37,22 @@ internal static class SquareHelpers
 
     private static IEnumerable<Square> GetDerpendicularlyLocatedSquares(Square relativeSquare)
     {
-        return BoardGenerator.Squares.Where(square => square.transform.position.z != relativeSquare.transform.position.z
-                                                        && square.transform.position.x == relativeSquare.transform.position.x);
+        return Enumerable.Concat(GetVerticalLocatedSquares(relativeSquare), GetHorizontalLocatedSquares(relativeSquare));
     }
 
     private static IEnumerable<Square> GetDiagonalyLocatedSquares(Square relativeSquare)
     {
-        return BoardGenerator.Squares.Where(square => square.transform.position.z != relativeSquare.transform.position.z
-                                                        && square.transform.position.x != relativeSquare.transform.position.x);
+        var currentSquareZ = relativeSquare.transform.position.z;
+        var currentSquareX = relativeSquare.transform.position.x;
+
+        return BoardGenerator.Squares.Where(square => ((square.transform.position.x - square.transform.position.z == currentSquareX - currentSquareZ)
+                                            || (square.transform.position.x + square.transform.position.z == currentSquareX + currentSquareZ))
+                                            && !(square.transform.position.z == currentSquareZ && square.transform.position.x == currentSquareX));
+    }
+
+    private static IEnumerable<Square> CombinedDiagonalAndDerpendicular(Square relativeSquare)
+    {
+        return Enumerable.Concat(GetDiagonalyLocatedSquares(relativeSquare), GetDerpendicularlyLocatedSquares(relativeSquare));
     }
 
     private static IEnumerable<Square> GetKnightMovementLocatedSquares(Square relativeSquare)
