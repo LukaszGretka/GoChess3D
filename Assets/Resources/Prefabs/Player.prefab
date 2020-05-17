@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d69087e7340676648b252959f9a831ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &5841465501487826129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,6 +74,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37e8e26f7b58ef345a795d4f9f4ea71c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &-4585346267250568582
 MonoBehaviour:
   m_ObjectHideFlags: 0

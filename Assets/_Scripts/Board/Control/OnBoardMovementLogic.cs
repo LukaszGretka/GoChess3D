@@ -14,12 +14,16 @@ namespace Assets._Scripts.Board.Control
             _defaultSquareColor = new List<(Color, Square)>();
         }
 
-        internal void ShowPossibleMovement(GameObject selectedPiece)
+        internal IEnumerable<Square> ShowPossibleMovement(GameObject selectedPiece)
         {
+            var squareUnderPiece = selectedPiece.GetComponentInParent<Square>();
+
             var possibleSqueresToMove = selectedPiece.GetComponent<IPieceMovement>()
-                                         .GetPossibleMovementSquares(selectedPiece.GetComponentInParent<Square>());
+                                         .GetPossibleMovementSquares(squareUnderPiece);
 
             SetBacklightColorToSquare(possibleSqueresToMove);
+
+            return possibleSqueresToMove;
         }
 
         #region To relocate

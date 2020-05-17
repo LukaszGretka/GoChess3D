@@ -6,8 +6,14 @@ namespace Assets._Scripts.Helpers
     {
         internal static void AddAsChildrenTo(this GameObject children, GameObject parent)
         {
-            children.transform.parent = parent.transform;
+            children.transform.SetParent(parent.transform);
             children.transform.position = parent.transform.position;
+        }
+
+        internal static void AddAsChildrenTo(this GameObject children, GameObject parent, Vector3 childrenOffset)
+        {
+            children.transform.parent = parent.transform;
+            children.transform.position = childrenOffset;
         }
     }
 }

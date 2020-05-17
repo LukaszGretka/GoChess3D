@@ -1,13 +1,20 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Board.Control;
+using Assets._Scripts.Helpers;
+using Mirror;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(NetworkTransform))]
 public class PlayerController : Player
 {
     private IPieceMovement _lastSelectedPieceMovementComponent;
     private GameObject _lastSelectedPiece;
+    private bool _anyPieceSelected;
 
     private OnBoardMovementLogic _onBoardMovementLogic;
+    private IEnumerable<Square> _possibleMovementSquares;
 
     public override void OnStartLocalPlayer()
     {
@@ -24,11 +31,21 @@ public class PlayerController : Player
         }
     }
 
-    private void Update()
+    void Update()
     {
-        if (isLocalPlayer && Input.GetMouseButtonDown(0))
+        if (!isLocalPlayer)
+            return;
+
+        if (Input.GetMouseButtonDown(0) && !_anyPieceSelected)
         {
-            SelectPiece();
+            _anyPieceSelected = SelectPiece();
+            return;
+        }
+
+        if (_possibleMovementSquares != null && Input.GetMouseButtonDown(0) && _anyPieceSelected)
+        {
+            MakeMove();
+            _anyPieceSelected = false;
         }
     }
 
@@ -40,13 +57,13 @@ public class PlayerController : Player
         Camera.main.transform.localEulerAngles = new Vector3(45f, 0f, 0f);
     }
 
-    private void SelectPiece()
+    private bool SelectPiece()
     {
         Ray rayFromCam = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (!Physics.Raycast(rayFromCam, out RaycastHit rayHit))
         {
-            return;
+            return false;
         }
         var hitPiece = rayHit.collider.gameObject;
         var hitPieceIPieceComponent = hitPiece.GetComponent<IPiece>();
@@ -54,12 +71,12 @@ public class PlayerController : Player
         if (hitPieceIPieceComponent is null)
         {
             Debug.LogWarning($"No IPiece attached to hit object. Object name: {hitPiece.name}");
-            return;
+            return false;
         }
 
         if (PieceColor != hitPiece.GetComponent<IPiece>().PieceColor)
         {
-            return;
+            return false;
         }
 
         var hitPieceIPieceMovementComponent = hitPiece.GetComponent<IPieceMovement>();
@@ -67,13 +84,13 @@ public class PlayerController : Player
         if (hitPieceIPieceMovementComponent is null)
         {
             Debug.LogError("No IPieceMovement attached to hit object");
-            return;
+            return false;
         }
 
         if (_lastSelectedPieceMovementComponent != null && hitPieceIPieceMovementComponent.IsSelected == _lastSelectedPieceMovementComponent.IsSelected)
         {
             Debug.Log("Selected the same Piece");
-            return;
+            return false;
         }
 
         if (_lastSelectedPiece is null == false)
@@ -88,16 +105,65 @@ public class PlayerController : Player
 
         if (hitPiece != null)
         {
-            _onBoardMovementLogic.ShowPossibleMovement(hitPiece);
+            _possibleMovementSquares = _onBoardMovementLogic.ShowPossibleMovement(hitPiece);
+            return true;
         }
+
+        return false;
     }
 
+    // TODO - just for test need refactoring after that
     private void MakeMove()
     {
+        Ray rayFromCam = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (!Physics.Raycast(rayFromCam, out RaycastHit rayHit))
+        {
+            return;
+        }
+
+        var hitSquare = rayHit.collider.gameObject;
+        var hitSquareComponent = hitSquare.GetComponent<Square>();
+
+        if (hitSquareComponent is null)
+        {
+            return;
+        }
+
+        var _possibleMovementSquaresListed = _possibleMovementSquares.ToList();
+
+        if (!_possibleMovementSquaresListed.Contains(hitSquareComponent))
+        {
+            Debug.Log($"Not able to move at selected square {hitSquareComponent.GetCoordinates().ToString()}");
+            return;
+        }
+        
+        AttachPieceToTargetingSquare(hitSquareComponent);
+        DeattachPieceFromLeavingSquare(_lastSelectedPiece.GetComponentInParent<Square>());
+
         // 1. Get piece which is selected.
         // 2. Calculate possibilities of movement.
         // 3. Perform Piece movement.
         // 4. Deselect moved piece.
         // 5. Auto end of player turn.
+    }
+
+    private void DeattachPieceFromLeavingSquare(Square leavingSquare)
+    {
+        leavingSquare.IsOccupied = false;
+        Destroy(leavingSquare.GetComponent<NetworkTransformChild>());
+    }
+
+    private void AttachPieceToTargetingSquare(Square targetingSquare)
+    {
+        var hitSquareTransformChild = targetingSquare.gameObject.AddComponent<NetworkTransformChild>();
+        hitSquareTransformChild.target = _lastSelectedPiece.transform;
+
+        targetingSquare.transform.parent = hitSquareTransformChild.transform;
+        _lastSelectedPiece.transform.position = new Vector3(targetingSquare.transform.position.x,
+                                                                _lastSelectedPiece.transform.position.y,
+                                                                 targetingSquare.transform.position.z);
+
+        targetingSquare.IsOccupied = true;
     }
 }

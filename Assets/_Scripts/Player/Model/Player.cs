@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerGUI))]
 public class Player : NetworkBehaviour
 {
-    public static string Name { get; set; }
+    public string Name { get; set; }
 
-    public static PieceColor PieceColor { get; set; }
+    public PieceColor PieceColor { get; set; }
 }

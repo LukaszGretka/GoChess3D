@@ -2,6 +2,7 @@
 using Assets._Scripts.Network.Helpers;
 using Mirror;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets._Scripts.Network

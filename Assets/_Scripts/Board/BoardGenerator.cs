@@ -30,7 +30,7 @@ public class BoardGenerator : MonoBehaviour
         AddBoardBorderMarking(fieldsContainer.GetComponentsInChildren<Square>());
     }
 
-    private GameObject GenerateBoardBorder()
+    private void GenerateBoardBorder()
     {
         GameObject boardBorder = GameObject.CreatePrimitive(PrimitiveType.Cube);
         boardBorder.name = GameObjectNames.Border;
@@ -38,8 +38,6 @@ public class BoardGenerator : MonoBehaviour
         boardBorder.transform.localScale = new Vector3(BoardConfiguration.BoardHorizontalSize + BoardConfiguration.BorderThickness, BoardConfiguration.BorderHight, BoardConfiguration.BoardVerticalSize + BoardConfiguration.BorderThickness);
         boardBorder.transform.position = Vector3.zero;
         boardBorder.GetComponent<Renderer>().material = _boardBorderMaterial;
-
-        return boardBorder;
     }
 
     private GameObject GenerateFieldsContainer()

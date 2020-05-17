@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 148419262}
   - component: {fileID: 148419263}
   - component: {fileID: 148419264}
+  - component: {fileID: 148419265}
   m_Layer: 0
   m_Name: GameFlowManager
   m_TagString: GameFlowEngine
@@ -180,8 +181,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 1241544615
-  serverOnly: 0
+  serverOnly: 1
   m_AssetId: 
+--- !u!114 &148419265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148419261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be03f9797648fcc4fbda83f70a57677a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!1 &373663010
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,8 +262,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6fa1357fd8e684f8aad702998b75e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
 --- !u!114 &373663014
 MonoBehaviour:
   m_ObjectHideFlags: 0

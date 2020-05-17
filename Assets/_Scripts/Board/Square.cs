@@ -7,7 +7,8 @@ public class Square : MonoBehaviour
 {
     private Coords _coord;
 
-    internal bool IsOccupied { get; set; }
+    [SerializeField]
+    internal bool IsOccupied;   
 
     internal List<SquareMarkOrientation> SquareMarkOrientationFlags { get; private set; }
 
