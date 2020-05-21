@@ -12,13 +12,6 @@ namespace Assets._Scripts.Logic.PiecesMovement
 {
     internal class PawnMovement : PieceMovementBase, IPieceMovement
     {
-        private ServerGameFlowEngine _serverGameFlowEngine;
-
-        private void Start()
-        {
-            _serverGameFlowEngine = GameObject.Find("GameFlowManager").GetComponent<ServerGameFlowEngine>();
-        }
-
         public MovementType MovementType => MovementType.Derpendicularly;
 
         public bool AbleToMoveBackward => false;
@@ -31,7 +24,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
             var pieceOnSquareColor = GetComponentInChildren<IPiece>().PieceColor;
-            return _serverGameFlowEngine.FirstTurn ? GetWhitePlayerFirstTurnPossibleMovement(currentSquare, pieceOnSquareColor)
+            return true == true ? GetWhitePlayerFirstTurnPossibleMovement(currentSquare, pieceOnSquareColor)
                                                                     : GetStandardPossibleMovement(currentSquare, pieceOnSquareColor);
         }
 

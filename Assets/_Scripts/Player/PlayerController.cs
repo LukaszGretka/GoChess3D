@@ -57,6 +57,16 @@ public class PlayerController : Player
         Camera.main.transform.localEulerAngles = new Vector3(45f, 0f, 0f);
     }
 
+    [ClientRpc]
+    internal void RpcSetPlayerColor(int color)
+    {
+        if (!isLocalPlayer)
+            return;
+
+        PieceColor = color == 1 ? Assets._Scripts.Pieces.Enums.PieceColor.White : Assets._Scripts.Pieces.Enums.PieceColor.Black;
+    }
+
+
     private bool SelectPiece()
     {
         Ray rayFromCam = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -137,7 +147,7 @@ public class PlayerController : Player
             Debug.Log($"Not able to move at selected square {hitSquareComponent.GetCoordinates().ToString()}");
             return;
         }
-        
+
         AttachPieceToTargetingSquare(hitSquareComponent);
         DeattachPieceFromLeavingSquare(_lastSelectedPiece.GetComponentInParent<Square>());
 

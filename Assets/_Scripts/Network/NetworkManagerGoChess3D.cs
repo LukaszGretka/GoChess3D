@@ -12,31 +12,29 @@ public class NetworkManagerGoChess3D : NetworkManager
     public delegate void PlayersLoadedHandler();
     public static event PlayersLoadedHandler OnPlayersConnected;
 
-    private static List<(NetworkConnection, Player)> _connectedPlayers = new List<(NetworkConnection, Player)>(); 
-
+    private static List<Player> _connectedPlayers = new List<Player>(); 
 
     private const int MaximumAmountOfPlayers = 2;
 
     public override void Awake()
     {
-        _connectedPlayers = new List<(NetworkConnection, Player)>();
+        _connectedPlayers = new List<Player>();
     }
 
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         Transform playerSpawnPoint = numPlayers == 0 ? WhitePlayerSpawnPoint : BlackPlayerSpawnPoint;
         GameObject player = Instantiate(playerPrefab, playerSpawnPoint.position, playerSpawnPoint.rotation);
-
         NetworkServer.AddPlayerForConnection(conn, player);
-        _connectedPlayers.Add((conn, player.GetComponent<Player>()));
+
+        player.GetComponent<PlayerController>().RpcSetPlayerColor(numPlayers);
+        _connectedPlayers.Add(player.GetComponent<Player>());
 
         if (numPlayers == MaximumAmountOfPlayers)
         {
-            var spawner = GameObject.FindGameObjectWithTag("GameFlowEngine").GetComponent<ServerPieceSpawner>();
-
-            foreach (var connectedPlayers in _connectedPlayers)
+            foreach (var connectedPlayer in _connectedPlayers)
             {
-                spawner.SpawnPiecesAtDefaultPositions(connectedPlayers.Item1, connectedPlayers.Item2.PieceColor);
+                connectedPlayer.gameObject.GetComponent<PlayerPieceSpawner>().RpcSpawnPieces();
             }
         }
         else

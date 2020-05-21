@@ -11,12 +11,27 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ServerPieceSpawner : NetworkBehaviour
+internal class PlayerPieceSpawner : NetworkBehaviour
 {
     private const string SquareTagName = "Square";
-    private const string PieceTagName = "Piece";
+    private PieceColor _rpcSpawnColor = Player.PieceColor;
 
-    internal void SpawnPiecesAtDefaultPositions(NetworkConnection playerNetworkConnection, PieceColor playerPieceColor)
+    [ClientRpc]
+    internal void RpcSpawnPieces()
+    {
+        if (!isLocalPlayer)
+        {
+            _rpcSpawnColor = Player.PieceColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
+        }
+        else
+        {
+            _rpcSpawnColor = Player.PieceColor;
+        }
+
+        SpawnPieces();
+    }
+
+    private void SpawnPieces()
     {
         IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SquareTagName);
 
@@ -34,19 +49,19 @@ public class ServerPieceSpawner : NetworkBehaviour
         spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('7')));
         spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('8')));
 
-        SpawnPiece<King>(spawningSquares, playerNetworkConnection, playerPieceColor);
-        SpawnPiece<Queen>(spawningSquares, playerNetworkConnection, playerPieceColor);
-        SpawnPiece<Bishop>(spawningSquares, playerNetworkConnection, playerPieceColor);
-        SpawnPiece<Knight>(spawningSquares, playerNetworkConnection, playerPieceColor);
-        SpawnPiece<Rook>(spawningSquares, playerNetworkConnection, playerPieceColor);
-        SpawnPiece<Pawn>(spawningSquares, playerNetworkConnection, playerPieceColor);
+        SpawnPiece<King>(spawningSquares);
+        SpawnPiece<Queen>(spawningSquares);
+        SpawnPiece<Bishop>(spawningSquares);
+        SpawnPiece<Knight>(spawningSquares);
+        SpawnPiece<Rook>(spawningSquares);
+        SpawnPiece<Pawn>(spawningSquares);
 
         SetSpawningSquaresAsOccupied(spawningSquares);
     }
 
-    private void SpawnPiece<T>(IEnumerable<Square> squares, NetworkConnection playerNetworkConnection, PieceColor playerPieceColor) where T : Component, IPiece
+    private void SpawnPiece<T>(IEnumerable<Square> squares) where T : Component, IPiece
     {
-        IEnumerable<Coords> pieceBoardCoords = PieceSpawnerManager.GetDefaultPieceCoords<T>(playerPieceColor);
+        IEnumerable<Coords> pieceBoardCoords = PieceSpawnerManager.GetDefaultPieceCoords<T>(_rpcSpawnColor);
 
         foreach (Coords pieceCoords in pieceBoardCoords)
         {
@@ -54,16 +69,14 @@ public class ServerPieceSpawner : NetworkBehaviour
             var spawnedPiece = SpawnPieceAtDefaultSquare(squares, pieceCoords, pieceGameObjectResource);
             var pieceAttachedScript = spawnedPiece.AddComponent<T>();
 
-            pieceAttachedScript.PieceColor = playerPieceColor;
+            pieceAttachedScript.PieceColor = _rpcSpawnColor;
             (pieceAttachedScript as PieceMovementBase).CurrentPosition = pieceCoords;
 
             PieceHelper.SetDefaultPieceMaterial(spawnedPiece);
 
             spawnedPiece.transform.localRotation = Quaternion.Euler(default, pieceAttachedScript.PieceColor == PieceColor.White ? 180f : default, default);
-            NetworkServer.Spawn(spawnedPiece, playerNetworkConnection);
         }
     }
-
     private GameObject SpawnPieceAtDefaultSquare(IEnumerable<Square> squares, Coords pieceCoords, UnityEngine.Object pieceGameObjectResource)
     {
         Transform spawnerSquareTransform = GetSpawnerSquareTransform(squares, pieceCoords);
@@ -91,4 +104,6 @@ public class ServerPieceSpawner : NetworkBehaviour
     {
         squares.ForEach(square => square.IsOccupied = true);
     }
+
 }
+
