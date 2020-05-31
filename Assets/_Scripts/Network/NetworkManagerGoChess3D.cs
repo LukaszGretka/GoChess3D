@@ -1,7 +1,6 @@
 ﻿using Assets._Scripts.Network;
 using Assets._Scripts.Network.Helpers;
 using Mirror;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NetworkManagerGoChess3D : NetworkManager
@@ -15,7 +14,6 @@ public class NetworkManagerGoChess3D : NetworkManager
     private OwnershipManager _ownershipManager;
     private const int MaximumAmountOfPlayers = 2;
 
-
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         _ownershipManager = GameObject.Find("ServerManager").GetComponent<OwnershipManager>();
@@ -27,7 +25,7 @@ public class NetworkManagerGoChess3D : NetworkManager
 
         if (numPlayers == MaximumAmountOfPlayers)
         {
-            // start game
+            //TODO start game
         }
         else
         {

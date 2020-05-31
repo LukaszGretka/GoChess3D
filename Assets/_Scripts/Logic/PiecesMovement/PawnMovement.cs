@@ -1,12 +1,10 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Logic.PiecesMovement.Abstract;
 using Assets._Scripts.Movement;
-using Assets._Scripts.Network;
 using Assets._Scripts.Pieces.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement
 {

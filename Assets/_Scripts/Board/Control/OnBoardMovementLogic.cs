@@ -1,6 +1,5 @@
 ﻿using Assets._Scripts.Abstract;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Assets._Scripts.Board.Control

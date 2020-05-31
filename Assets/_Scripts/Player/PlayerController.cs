@@ -138,8 +138,8 @@ public class PlayerController : Player
             return;
         }
 
+        CmdDeattachPieceFromLeavingSquare(_lastSelectedPiece.GetComponentInParent<Square>().gameObject);
         CmdAttachPieceToTargetingSquare(hitSquareComponent.gameObject, _lastSelectedPiece);
-        CmdDeattachPieceFromLeavingSquare(_lastSelectedPiece);
 
         // 1. Get piece which is selected.
         // 2. Calculate possibilities of movement.
