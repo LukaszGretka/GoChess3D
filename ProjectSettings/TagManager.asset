@@ -10,6 +10,7 @@ TagManager:
   - Piece
   - GUIManager
   - GameFlowEngine
+  - SquarePad
   layers:
   - Default
   - TransparentFX

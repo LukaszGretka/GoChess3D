@@ -23,14 +23,14 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
-            var pieceOnSquareColor = GetComponentInChildren<IPiece>().PieceColor;
+            var pieceOnSquareColor = GetComponentInChildren<Piece>().PieceColor;
             return true == true ? GetWhitePlayerFirstTurnPossibleMovement(currentSquare, pieceOnSquareColor)
                                                                     : GetStandardPossibleMovement(currentSquare, pieceOnSquareColor);
         }
 
         private IEnumerable<Square> GetWhitePlayerFirstTurnPossibleMovement(Square currentSquare, PieceColor pieceOnSquareColor)
         {
-            return SquareMovementHelpers.GetMovement(MovementType, currentSquare)
+            return SquaresHelper.GetMovement(MovementType, currentSquare)
                 .Where(square => (pieceOnSquareColor == PieceColor.White ?
                         square.transform.position.z == currentSquare.transform.position.z + 2f 
                             || square.transform.position.z == currentSquare.transform.position.z + 1f
@@ -39,7 +39,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
         }
         private IEnumerable<Square> GetStandardPossibleMovement(Square currentSquare, PieceColor pieceOnSquareColor)
         {
-            return SquareMovementHelpers.GetMovement(MovementType, currentSquare)
+            return SquaresHelper.GetMovement(MovementType, currentSquare)
                 .Where(square => pieceOnSquareColor == PieceColor.White ?
                         square.transform.position.z == currentSquare.transform.position.z + 1f
                         : square.transform.position.z == currentSquare.transform.position.z - 1f);

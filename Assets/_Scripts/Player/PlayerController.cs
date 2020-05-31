@@ -1,6 +1,5 @@
 ﻿using Assets._Scripts.Abstract;
 using Assets._Scripts.Board.Control;
-using Assets._Scripts.Helpers;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,7 @@ public class PlayerController : Player
         base.OnStartLocalPlayer();
         SetCameraSettings();
 
-        _onBoardMovementLogic = GameObject.Find("BoarderManager").GetComponent<OnBoardMovementLogic>();
+        _onBoardMovementLogic = GameObject.Find("Board").GetComponent<OnBoardMovementLogic>();
         var networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManagerGoChess3D>();
 
         if (networkManager != null)
@@ -57,16 +56,6 @@ public class PlayerController : Player
         Camera.main.transform.localEulerAngles = new Vector3(45f, 0f, 0f);
     }
 
-    [ClientRpc]
-    internal void RpcSetPlayerColor(int color)
-    {
-        if (!isLocalPlayer)
-            return;
-
-        PieceColor = color == 1 ? Assets._Scripts.Pieces.Enums.PieceColor.White : Assets._Scripts.Pieces.Enums.PieceColor.Black;
-    }
-
-
     private bool SelectPiece()
     {
         Ray rayFromCam = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -76,15 +65,15 @@ public class PlayerController : Player
             return false;
         }
         var hitPiece = rayHit.collider.gameObject;
-        var hitPieceIPieceComponent = hitPiece.GetComponent<IPiece>();
+        var hitPieceComponent = hitPiece.GetComponent<Piece>();
 
-        if (hitPieceIPieceComponent is null)
+        if (hitPieceComponent is null)
         {
             Debug.LogWarning($"No IPiece attached to hit object. Object name: {hitPiece.name}");
             return false;
         }
 
-        if (PieceColor != hitPiece.GetComponent<IPiece>().PieceColor)
+        if (PieceColor != hitPieceComponent.PieceColor)
         {
             return false;
         }
@@ -137,6 +126,7 @@ public class PlayerController : Player
 
         if (hitSquareComponent is null)
         {
+            Debug.Log($"Selected game object with no {nameof(Square)} script attached");
             return;
         }
 
@@ -148,8 +138,8 @@ public class PlayerController : Player
             return;
         }
 
-        AttachPieceToTargetingSquare(hitSquareComponent);
-        DeattachPieceFromLeavingSquare(_lastSelectedPiece.GetComponentInParent<Square>());
+        CmdAttachPieceToTargetingSquare(hitSquareComponent.gameObject, _lastSelectedPiece);
+        CmdDeattachPieceFromLeavingSquare(_lastSelectedPiece);
 
         // 1. Get piece which is selected.
         // 2. Calculate possibilities of movement.
@@ -158,22 +148,20 @@ public class PlayerController : Player
         // 5. Auto end of player turn.
     }
 
-    private void DeattachPieceFromLeavingSquare(Square leavingSquare)
+    [Command]
+    private void CmdDeattachPieceFromLeavingSquare(GameObject leavingSquare)
     {
-        leavingSquare.IsOccupied = false;
-        Destroy(leavingSquare.GetComponent<NetworkTransformChild>());
+        leavingSquare.GetComponent<Square>().IsOccupied = false;
     }
 
-    private void AttachPieceToTargetingSquare(Square targetingSquare)
+    [Command]
+    private void CmdAttachPieceToTargetingSquare(GameObject targetingSquare, GameObject lastSelectedPiece)
     {
-        var hitSquareTransformChild = targetingSquare.gameObject.AddComponent<NetworkTransformChild>();
-        hitSquareTransformChild.target = _lastSelectedPiece.transform;
-
-        targetingSquare.transform.parent = hitSquareTransformChild.transform;
-        _lastSelectedPiece.transform.position = new Vector3(targetingSquare.transform.position.x,
-                                                                _lastSelectedPiece.transform.position.y,
+        targetingSquare.transform.parent = lastSelectedPiece.transform;
+        lastSelectedPiece.transform.position = new Vector3(targetingSquare.transform.position.x,
+                                                                lastSelectedPiece.transform.position.y,
                                                                  targetingSquare.transform.position.z);
 
-        targetingSquare.IsOccupied = true;
+        targetingSquare.GetComponent<Square>().IsOccupied = true;
     }
 }

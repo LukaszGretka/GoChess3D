@@ -1,5 +1,5 @@
-﻿using Assets._Scripts.Network.Helpers;
-using Assets._Scripts.Pieces.Logic;
+﻿using Assets._Scripts.Network;
+using Assets._Scripts.Network.Helpers;
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,30 +12,22 @@ public class NetworkManagerGoChess3D : NetworkManager
     public delegate void PlayersLoadedHandler();
     public static event PlayersLoadedHandler OnPlayersConnected;
 
-    private static List<Player> _connectedPlayers = new List<Player>(); 
-
+    private OwnershipManager _ownershipManager;
     private const int MaximumAmountOfPlayers = 2;
 
-    public override void Awake()
-    {
-        _connectedPlayers = new List<Player>();
-    }
 
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
+        _ownershipManager = GameObject.Find("ServerManager").GetComponent<OwnershipManager>();
         Transform playerSpawnPoint = numPlayers == 0 ? WhitePlayerSpawnPoint : BlackPlayerSpawnPoint;
         GameObject player = Instantiate(playerPrefab, playerSpawnPoint.position, playerSpawnPoint.rotation);
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        player.GetComponent<PlayerController>().RpcSetPlayerColor(numPlayers);
-        _connectedPlayers.Add(player.GetComponent<Player>());
+        _ownershipManager.SetPieceAuthority(conn, numPlayers == 1 ? Assets._Scripts.Pieces.Enums.PieceColor.White : Assets._Scripts.Pieces.Enums.PieceColor.Black);
 
         if (numPlayers == MaximumAmountOfPlayers)
         {
-            foreach (var connectedPlayer in _connectedPlayers)
-            {
-                connectedPlayer.gameObject.GetComponent<PlayerPieceSpawner>().RpcSpawnPieces();
-            }
+            // start game
         }
         else
         {

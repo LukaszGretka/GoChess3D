@@ -17,7 +17,7 @@ namespace Assets._Scripts.Pieces.Helpers
 
         internal static void SetDefaultPieceMaterial(GameObject pieceGameObject)
         {
-            var materialName = pieceGameObject.GetComponent<IPiece>().PieceColor == PieceColor.White ?
+            var materialName = pieceGameObject.GetComponent<Piece>().PieceColor == PieceColor.White ?
                 WhitePieceMaterialName : BlackPieceMaterialName;
 
             var resourceMaterial = Resources.Load($"{Path.PiecesMaterialsPath}{materialName}");

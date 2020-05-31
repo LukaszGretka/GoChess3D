@@ -4,10 +4,8 @@ using Assets._Scripts.Pieces.Enums;
 
 namespace Assets._Scripts.Pieces
 {
-    internal class King : KingMovement, IPiece
+    internal class King : Piece
     {
-        public string Name => GetType().Name;
-
-        public PieceColor PieceColor { get; set; }
+        protected override string Name => GetType().Name;
     }
 }

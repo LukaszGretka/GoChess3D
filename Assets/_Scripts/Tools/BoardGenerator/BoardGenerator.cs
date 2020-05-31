@@ -5,8 +5,9 @@ using Assets._Scripts.Helpers;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class BoardGenerator : MonoBehaviour
+public class BoardGenerator : NetworkBehaviour
 {
     [SerializeField]
     private GameObject _simpleSquare;
@@ -20,14 +21,12 @@ public class BoardGenerator : MonoBehaviour
     [SerializeField]
     private Material _boardBorderMaterial;
 
-    internal static List<Square> Squares { get; private set; }
-
     internal void Awake()
     {
-        GenerateBoardBorder();
-        var fieldsContainer = GenerateFieldsContainer();
-        AddFieldsToContainer(fieldsContainer.transform);
-        AddBoardBorderMarking(fieldsContainer.GetComponentsInChildren<Square>());
+        //GenerateBoardBorder();
+        //var fieldsContainer = GenerateFieldsContainer();
+        //AddFieldsToContainer(fieldsContainer.transform);
+        //AddBoardBorderMarking(fieldsContainer.GetComponentsInChildren<Square>());
     }
 
     private void GenerateBoardBorder()
@@ -50,8 +49,6 @@ public class BoardGenerator : MonoBehaviour
 
     private void AddFieldsToContainer(Transform containerTransform)
     {
-        Squares = new List<Square>();
-
         Vector3 primarySpawnPoint = new Vector3
         {
             x = _simpleSquare.transform.localScale.x / 2f - BoardConfiguration.BoardHorizontalSize / 2f,
@@ -68,7 +65,6 @@ public class BoardGenerator : MonoBehaviour
             var currentSquareSymbol = BoardConfiguration.AvailableSquareSymbols[horizontalIndex];
             var currentSquareScript = spawnedSquare.AddComponent<Square>();
             SetCurrentSquareBasicComponents(currentSquareScript, BoardConfiguration.AvailableSquareNumbers[0], BoardConfiguration.AvailableSquareSymbols[horizontalIndex], currentSquareMaterial);
-            Squares.Add(currentSquareScript);
 
             for (int verticalIndex = 1; verticalIndex < BoardConfiguration.SquaresVerticalDimension; verticalIndex++)
             {
@@ -78,7 +74,6 @@ public class BoardGenerator : MonoBehaviour
                 var currentSquareNumber = BoardConfiguration.AvailableSquareNumbers[verticalIndex];
                 currentSquareScript = spawnedSquare.AddComponent<Square>();
                 SetCurrentSquareBasicComponents(currentSquareScript, currentSquareNumber, currentSquareSymbol, currentSquareMaterial);
-                Squares.Add(currentSquareScript);
             }
 
             currentSpawnPoint = new Vector3(currentSpawnPoint.x + BoardConfiguration.FieldsSplitDistance, currentSpawnPoint.y, primarySpawnPoint.z);
@@ -208,5 +203,19 @@ public class BoardGenerator : MonoBehaviour
         markContainerLocalPosition.y += 0.1f;
 
         return markContainerLocalPosition;
+    }
+
+    [Server]
+    internal static void SpawnPiecesMovementPads()
+    {
+        IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag("Square");
+        var pieceGameObjectResource = Resources.Load($"Prefabs/Transforms/SquarePad");
+
+        foreach (var square in squaredTaggedGameObjects)
+        {
+            var padInstance = (GameObject)Instantiate(pieceGameObjectResource, square.transform);
+            padInstance.transform.localPosition = Vector3.zero;
+            NetworkServer.Spawn(padInstance);
+        }
     }
 }

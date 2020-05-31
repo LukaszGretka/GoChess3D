@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Assets._Scripts.Logic.PiecesMovement
 {
-    internal abstract class KnightMovement : PieceMovementBase, IPieceMovement
+    internal class KnightMovement : PieceMovementBase, IPieceMovement
     {
         public MovementType MovementType => MovementType.Knight;
 
@@ -21,7 +21,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
-            return SquareMovementHelpers.GetMovement(MovementType, currentSquare);
+            return SquaresHelper.GetMovement(MovementType, currentSquare);
         }
     }
 }

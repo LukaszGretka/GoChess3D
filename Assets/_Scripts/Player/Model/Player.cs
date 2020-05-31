@@ -8,5 +8,5 @@ public class Player : NetworkBehaviour
 {
     public string Name { get; set; }
 
-    public static PieceColor PieceColor { get; set; }
+    public PieceColor PieceColor { get; set; }
 }

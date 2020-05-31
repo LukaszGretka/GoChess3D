@@ -8,7 +8,7 @@ using Assets._Scripts.Pieces.Enums;
 
 namespace Assets._Scripts.Logic.PiecesMovement
 {
-    internal abstract class KingMovement : PieceMovementBase, IPieceMovement
+    internal class KingMovement : PieceMovementBase, IPieceMovement
     {
         public MovementType MovementType => MovementType.DiagonalAndDerpendicular;
 
@@ -21,7 +21,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
-            return SquareMovementHelpers.GetMovement(MovementType, currentSquare)
+            return SquaresHelper.GetMovement(MovementType, currentSquare)
                 .Where(square => square.transform.position.x == currentSquare.transform.position.x + 1f
                                 || square.transform.position.x == currentSquare.transform.position.x -1f
                                 || square.transform.position.z == currentSquare.transform.position.z +1 

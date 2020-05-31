@@ -1,11 +1,13 @@
 ﻿using Assets._Scripts.Pieces.Enums;
+using UnityEngine;
 
 namespace Assets._Scripts.Abstract
 {
-    public interface IPiece
+    internal abstract class Piece : MonoBehaviour
     {
-        string Name { get; }
+        protected abstract string Name { get; }
 
-        PieceColor PieceColor { get; set; }
+        [SerializeField]
+        internal PieceColor PieceColor;
     }
 }
