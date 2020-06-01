@@ -157,7 +157,7 @@ public class PlayerController : Player
     [Command]
     private void CmdAttachPieceToTargetingSquare(GameObject targetingSquare, GameObject lastSelectedPiece)
     {
-        targetingSquare.transform.parent = lastSelectedPiece.transform;
+        lastSelectedPiece.transform.parent = targetingSquare.transform;
         lastSelectedPiece.transform.position = new Vector3(targetingSquare.transform.position.x,
                                                                 lastSelectedPiece.transform.position.y,
                                                                  targetingSquare.transform.position.z);
