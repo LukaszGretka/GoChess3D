@@ -135,7 +135,8 @@ internal static class SquaresHelper
         return _onBoardSquares.Where(square => (square.transform.position.z == relativeSquare.transform.position.z + 2f
                                                 || square.transform.position.z == relativeSquare.transform.position.z - 2f)
                                                     && (square.transform.position.x == relativeSquare.transform.position.x + 1f
-                                                || square.transform.position.x == relativeSquare.transform.position.x - 1f));
+                                                || square.transform.position.x == relativeSquare.transform.position.x - 1f))
+                                                .Where(square => !square.IsOccupied);
     }
 
     private static IEnumerable<Square> FilterBlockedDiagonalFields(this IEnumerable<Square> squares, Square relativeSquare)

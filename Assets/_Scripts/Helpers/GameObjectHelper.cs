@@ -15,5 +15,22 @@ namespace Assets._Scripts.Helpers
             children.transform.parent = parent.transform;
             children.transform.position = childrenOffset;
         }
+
+        internal static GameObject GetGameObjectFromRayCast()
+        {
+            Ray rayFromCam = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (!Physics.Raycast(rayFromCam, out RaycastHit rayHit))
+            {
+                return null;
+            }
+
+            return rayHit.collider.gameObject;
+        }
+
+        internal static T GetComponentFromRayCast<T>() where T : Component
+        {
+            return GetGameObjectFromRayCast().GetComponent<T>();
+        }
     }
 }

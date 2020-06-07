@@ -1,5 +1,6 @@
 ﻿using Assets._Scripts.Abstract;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets._Scripts.Board.Control
@@ -13,22 +14,25 @@ namespace Assets._Scripts.Board.Control
             _defaultSquareColor = new List<(Color, Square)>();
         }
 
-        internal IEnumerable<Square> ShowPossibleMovement(GameObject selectedPiece)
+        internal IEnumerable<Square> GetPossiblePieceMovement(GameObject selectedPiece)
         {
             var squareUnderPiece = selectedPiece.GetComponentInParent<Square>();
 
-            var possibleSqueresToMove = selectedPiece.GetComponent<IPieceMovement>()
-                                         .GetPossibleMovementSquares(squareUnderPiece);
+            if(squareUnderPiece is null)
+            {
+                Debug.LogError($"Piece {selectedPiece.name} is not attached to any {nameof(Square)} component");
+                return Enumerable.Empty<Square>();
+            }
 
-            SetBacklightColorToSquare(possibleSqueresToMove);
+            var possiblePieceMovement = selectedPiece.GetComponent<IPieceMovement>().GetPossibleMovementSquares(squareUnderPiece);
 
-            return possibleSqueresToMove;
+            return possiblePieceMovement;
         }
 
         #region To relocate
 
         // TODO Need to create class to handle all selection/deselection color changes (also for pieces)
-        private void SetBacklightColorToSquare(IEnumerable<Square> possibleSqueresToMove)
+        internal void SetBacklightColorToSquare(IEnumerable<Square> possibleSqueresToMove)
         {
             foreach (var square in possibleSqueresToMove)
             {
