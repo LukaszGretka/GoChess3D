@@ -119,6 +119,7 @@ public class PlayerController : Player
     private void CmdDeattachPieceFromLeavingSquare(GameObject leavingSquare)
     {
         leavingSquare.GetComponent<Square>().IsOccupied = false;
+        RpcDeattachPieceFromLeavingSquare(leavingSquare);
     }
 
     [Command]
@@ -126,8 +127,26 @@ public class PlayerController : Player
     {
         lastSelectedPiece.transform.parent = targetingSquare.transform;
         lastSelectedPiece.transform.position = new Vector3(targetingSquare.transform.position.x,
-                                                                lastSelectedPiece.transform.position.y,
-                                                                 targetingSquare.transform.position.z);
+                                                           lastSelectedPiece.transform.position.y,
+                                                           targetingSquare.transform.position.z);
+
+        targetingSquare.GetComponent<Square>().IsOccupied = true;
+        RpcAttachPieceToTargetingSquare(targetingSquare, lastSelectedPiece);
+    }
+
+    [ClientRpc]
+    private void RpcDeattachPieceFromLeavingSquare(GameObject leavingSquare)
+    {
+        leavingSquare.GetComponent<Square>().IsOccupied = false;
+    }
+
+    [ClientRpc]
+    private void RpcAttachPieceToTargetingSquare(GameObject targetingSquare, GameObject lastSelectedPiece)
+    {
+        lastSelectedPiece.transform.parent = targetingSquare.transform;
+        lastSelectedPiece.transform.position = new Vector3(targetingSquare.transform.position.x,
+                                                           lastSelectedPiece.transform.position.y,
+                                                           targetingSquare.transform.position.z);
 
         targetingSquare.GetComponent<Square>().IsOccupied = true;
     }
