@@ -23,6 +23,7 @@ public class NetworkManagerGoChess3D : NetworkManager
 
         _ownershipManager.SetPieceAuthority(conn, numPlayers == 1 ? Assets._Scripts.Pieces.Enums.PieceColor.White : Assets._Scripts.Pieces.Enums.PieceColor.Black);
 
+
         if (numPlayers == MaximumAmountOfPlayers)
         {
             //TODO start game

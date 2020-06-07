@@ -12,11 +12,6 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public bool AbleToMoveBackward => true;
 
-        public bool CheckIfMovePossible()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
             return SquaresHelper.GetMovement(MovementType, currentSquare)

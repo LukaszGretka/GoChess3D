@@ -1,7 +1,5 @@
 ﻿using Assets._Scripts.Board.Control;
-using Assets._Scripts.Board.Models;
 using Assets._Scripts.Pieces.Helpers;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement.Abstract
@@ -29,8 +27,6 @@ namespace Assets._Scripts.Logic.PiecesMovement.Abstract
             _onBoardMovementLogic.RemoveBacklightFromSquares();
         }
 
-        public Coords CurrentPosition { get; set; }
-
-        public bool IsSelected { get; set; }
+        public bool IsSelected { get; private set; }
     }
 }

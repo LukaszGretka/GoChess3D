@@ -48,6 +48,7 @@ internal static class SquaresHelper
                                                         && square.transform.position.x != relativeSquare.transform.position.x);
     }
 
+    [Obsolete]
     private static List<Square> GetSpawnableSquares()
     {
         IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SquareTagName);
@@ -69,6 +70,7 @@ internal static class SquaresHelper
         return spawningSquares;
     }
 
+    [Obsolete]
     private static IEnumerable<Coords> GetDefaultPieceCoords<T>(PieceColor pieceColor) where T : Piece
     {
         Dictionary<Type, IEnumerable<Coords>> piecesCoordsTable = new Dictionary<Type, IEnumerable<Coords>>()

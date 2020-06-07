@@ -2,7 +2,6 @@
 using Assets._Scripts.Logic.PiecesMovement.Abstract;
 using Assets._Scripts.Movement;
 using Assets._Scripts.Pieces.Enums;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,11 +12,6 @@ namespace Assets._Scripts.Logic.PiecesMovement
         public MovementType MovementType => MovementType.Derpendicularly;
 
         public bool AbleToMoveBackward => false;
-
-        public bool CheckIfMovePossible()
-        {
-            throw new NotImplementedException();
-        }
 
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {

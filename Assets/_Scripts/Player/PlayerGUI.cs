@@ -1,5 +1,4 @@
 ﻿using Mirror;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,11 @@ public class PlayerGUI : Player
     private Text _playerNameTopBarUI;
     private Text _turnInfoTopBarUI;
     private Text _playerRemainTimeTopBarUI;
+
+    public override void OnStartLocalPlayer()
+    {
+        SetPlayerName();
+    }
 
     public override void OnStartClient()
     {
@@ -20,12 +24,6 @@ public class PlayerGUI : Player
         _playerNameTopBarUI = topBarPanel.transform.Find("PlayerNameValue").GetComponent<Text>();
         _turnInfoTopBarUI = topBarPanel.transform.Find("PlayerTurnInfoValue").GetComponent<Text>();
         _playerRemainTimeTopBarUI = topBarPanel.transform.Find("GameRemainTimeValue").GetComponent<Text>();
-    }
-
-    public override void OnStartLocalPlayer()
-    {
-        _playerNameTopBarUI.text = string.IsNullOrEmpty(Name) ? string.Format("{0} player", PieceColor.ToString())
-                                              : Name;
     }
 
     public void OnDestroy()

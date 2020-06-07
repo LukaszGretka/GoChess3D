@@ -23,10 +23,10 @@ public class BoardGenerator : NetworkBehaviour
 
     internal void Awake()
     {
-        //GenerateBoardBorder();
-        //var fieldsContainer = GenerateFieldsContainer();
-        //AddFieldsToContainer(fieldsContainer.transform);
-        //AddBoardBorderMarking(fieldsContainer.GetComponentsInChildren<Square>());
+        GenerateBoardBorder();
+        var fieldsContainer = GenerateFieldsContainer();
+        AddFieldsToContainer(fieldsContainer.transform);
+        AddBoardBorderMarking(fieldsContainer.GetComponentsInChildren<Square>());
     }
 
     private void GenerateBoardBorder()
