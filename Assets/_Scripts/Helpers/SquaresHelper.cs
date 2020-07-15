@@ -22,10 +22,13 @@ internal static class SquaresHelper
         {
             case MovementType.Diagonaly:
                 return GetDiagonalyLocatedSquares(relativeSquare).FilterBlockedDiagonalFields(relativeSquare);
+
             case MovementType.Derpendicularly:
                 return GetDerpendicularlyLocatedSquares(relativeSquare).FilterBlockedDerpendicularFields(relativeSquare);
+            
             case MovementType.Knight:
                 return GetKnightMovementLocatedSquares(relativeSquare);
+           
             case MovementType.DiagonalAndDerpendicular:
                 return CombinedDiagonalAndDerpendicular(relativeSquare).FilterBlockedDiagonalFields(relativeSquare)
                                                                        .FilterBlockedDerpendicularFields(relativeSquare);
@@ -48,26 +51,129 @@ internal static class SquaresHelper
                                                         && square.transform.position.x != relativeSquare.transform.position.x);
     }
 
-    [Obsolete]
-    private static List<Square> GetSpawnableSquares()
+    private static IEnumerable<Square> GetDerpendicularlyLocatedSquares(Square relativeSquare)
     {
-        IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SquareTagName);
+        return Enumerable.Concat(GetVerticalLocatedSquares(relativeSquare), GetHorizontalLocatedSquares(relativeSquare));
+    }
 
-        if (!squaredTaggedGameObjects.Any())
+    private static IEnumerable<Square> GetDiagonalyLocatedSquares(Square relativeSquare)
+    {
+        var currentSquareZ = relativeSquare.transform.position.z;
+        var currentSquareX = relativeSquare.transform.position.x;
+
+        return _onBoardSquares.Where(square => ((square.transform.position.x - square.transform.position.z == currentSquareX - currentSquareZ)
+                                            || (square.transform.position.x + square.transform.position.z == currentSquareX + currentSquareZ))
+                                            && !(square.transform.position.z == currentSquareZ && square.transform.position.x == currentSquareX));
+    }
+
+    private static IEnumerable<Square> CombinedDiagonalAndDerpendicular(Square relativeSquare)
+    {
+        return Enumerable.Concat(GetDiagonalyLocatedSquares(relativeSquare), GetDerpendicularlyLocatedSquares(relativeSquare));
+    }
+
+    private static IEnumerable<Square> GetKnightMovementLocatedSquares(Square relativeSquare)
+    {
+        return _onBoardSquares.Where(square => (square.transform.position.z == relativeSquare.transform.position.z + 2f
+                                                || square.transform.position.z == relativeSquare.transform.position.z - 2f)
+                                                    && (square.transform.position.x == relativeSquare.transform.position.x + 1f
+                                                || square.transform.position.x == relativeSquare.transform.position.x - 1f))
+                                                .Where(square => !square.IsOccupied);
+    }
+
+    private static IEnumerable<Square> FilterBlockedDerpendicularFields(this IEnumerable<Square> squares, Square relativeSquare)
+    {
+        var squaresList = squares.ToList();
+
+        var relativeSquarePosX = relativeSquare.transform.position.x;
+        var relativeSquarePosZ = relativeSquare.transform.position.z;
+
+        foreach (var occupiedSquare in squares.Where(square => square.IsOccupied))
         {
-            Debug.LogError($"Can not find any object with tag {SquareTagName}");
-            return new List<Square>();
+            var occupedSquarePosX = occupiedSquare.transform.position.x;
+            var occupedSquarePosZ = occupiedSquare.transform.position.z;
+
+            // Top
+            if (occupedSquarePosX == relativeSquarePosX && occupedSquarePosZ > relativeSquarePosZ)
+            {
+                squaresList.RemoveAll(x => x.transform.position.x == occupedSquarePosX
+                                        && x.transform.position.z >= occupedSquarePosZ);
+                continue;
+            }
+
+            // Bottom
+            if (occupedSquarePosX == relativeSquarePosX && occupedSquarePosZ < relativeSquarePosZ)
+            {
+                squaresList.RemoveAll(x => x.transform.position.x == occupedSquarePosX
+                                        && x.transform.position.z <= occupedSquarePosZ);
+                continue;
+            }
+
+            // Right
+            if (occupedSquarePosZ == relativeSquarePosZ && occupedSquarePosX > relativeSquarePosX)
+            {
+                squaresList.RemoveAll(x => x.transform.position.z == occupedSquarePosZ
+                                        && x.transform.position.x >= occupedSquarePosX);
+                continue;
+            }
+
+            // Left
+            if (occupedSquarePosZ == relativeSquarePosZ && occupedSquarePosX < relativeSquarePosX)
+            {
+                squaresList.RemoveAll(x => x.transform.position.z == occupedSquarePosZ
+                                        && x.transform.position.x <= occupedSquarePosX);
+                continue;
+            }
         }
 
-        var squares = squaredTaggedGameObjects.SelectMany(square => square.GetComponents<Square>()).ToList();
+        return squaresList;
+    }
 
-        var spawningSquares = new List<Square>();
-        spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('1')));
-        spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('2')));
-        spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('7')));
-        spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('8')));
+    private static IEnumerable<Square> FilterBlockedDiagonalFields(this IEnumerable<Square> squares, Square relativeSquare)
+    {
+        var squaresList = squares.ToList();
 
-        return spawningSquares;
+        var relativeSquarePosX = relativeSquare.transform.position.x;
+        var relativeSquarePosZ = relativeSquare.transform.position.z;
+
+        foreach (var occupiedSquare in squares.Where(square => square.IsOccupied))
+        {
+            var occupedSquarePosX = occupiedSquare.transform.position.x;
+            var occupedSquarePosZ = occupiedSquare.transform.position.z;
+
+            // Top-Left
+            if (occupedSquarePosX < relativeSquarePosX && occupedSquarePosZ > relativeSquarePosZ)
+            {
+                squaresList.RemoveAll(x => x.transform.position.x <= occupedSquarePosX
+                                        && x.transform.position.z >= occupedSquarePosZ);
+                continue;
+            }
+
+            // Top-Right
+            if (occupedSquarePosX > relativeSquarePosX && occupedSquarePosZ > relativeSquarePosZ)
+            {
+                squaresList.RemoveAll(x => x.transform.position.x >= occupedSquarePosX
+                                        && x.transform.position.z >= occupedSquarePosZ);
+                continue;
+            }
+
+            // Down-Left
+            if (occupedSquarePosX < relativeSquarePosX && occupedSquarePosZ < relativeSquarePosZ)
+            {
+                squaresList.RemoveAll(x => x.transform.position.x <= occupedSquarePosX
+                                        && x.transform.position.z <= occupedSquarePosZ);
+                continue;
+            }
+
+            // Down-Right
+            if (occupedSquarePosX > relativeSquarePosX && occupedSquarePosZ < relativeSquare.transform.position.z)
+            {
+                squaresList.RemoveAll(x => x.transform.position.x >= occupedSquarePosX
+                                        && x.transform.position.z <= occupedSquarePosZ);
+                continue;
+            }
+        }
+
+        return squaresList;
     }
 
     [Obsolete]
@@ -112,110 +218,25 @@ internal static class SquaresHelper
         return coords;
     }
 
-    private static IEnumerable<Square> GetDerpendicularlyLocatedSquares(Square relativeSquare)
+    [Obsolete]
+    private static List<Square> GetSpawnableSquares()
     {
-        return Enumerable.Concat(GetVerticalLocatedSquares(relativeSquare), GetHorizontalLocatedSquares(relativeSquare));
-    }
+        IEnumerable<GameObject> squaredTaggedGameObjects = GameObject.FindGameObjectsWithTag(SquareTagName);
 
-    private static IEnumerable<Square> GetDiagonalyLocatedSquares(Square relativeSquare)
-    {
-        var currentSquareZ = relativeSquare.transform.position.z;
-        var currentSquareX = relativeSquare.transform.position.x;
-
-        return _onBoardSquares.Where(square => ((square.transform.position.x - square.transform.position.z == currentSquareX - currentSquareZ)
-                                            || (square.transform.position.x + square.transform.position.z == currentSquareX + currentSquareZ))
-                                            && !(square.transform.position.z == currentSquareZ && square.transform.position.x == currentSquareX));
-    }
-
-    private static IEnumerable<Square> CombinedDiagonalAndDerpendicular(Square relativeSquare)
-    {
-        return Enumerable.Concat(GetDiagonalyLocatedSquares(relativeSquare), GetDerpendicularlyLocatedSquares(relativeSquare));
-    }
-
-    private static IEnumerable<Square> GetKnightMovementLocatedSquares(Square relativeSquare)
-    {
-        return _onBoardSquares.Where(square => (square.transform.position.z == relativeSquare.transform.position.z + 2f
-                                                || square.transform.position.z == relativeSquare.transform.position.z - 2f)
-                                                    && (square.transform.position.x == relativeSquare.transform.position.x + 1f
-                                                || square.transform.position.x == relativeSquare.transform.position.x - 1f))
-                                                .Where(square => !square.IsOccupied);
-    }
-
-    private static IEnumerable<Square> FilterBlockedDiagonalFields(this IEnumerable<Square> squares, Square relativeSquare)
-    {
-        // TODO this no make any sense to cast is to list and again to ienumerable
-        var squaresList = squares.ToList();
-
-        foreach (var occupiedSquare in squares.Where(square => square.IsOccupied))
+        if (!squaredTaggedGameObjects.Any())
         {
-            // Top-Left
-            if (occupiedSquare.transform.position.x < relativeSquare.transform.position.x && occupiedSquare.transform.position.z > relativeSquare.transform.position.z)
-            {
-                squaresList.RemoveAll(x => x.transform.position.x <= occupiedSquare.transform.position.x && x.transform.position.z >= occupiedSquare.transform.position.z);
-                continue;
-            }
-
-            // Top-Right
-            if (occupiedSquare.transform.position.x > relativeSquare.transform.position.x && occupiedSquare.transform.position.z > relativeSquare.transform.position.z)
-            {
-                squaresList.RemoveAll(x => x.transform.position.x >= occupiedSquare.transform.position.x && x.transform.position.z >= occupiedSquare.transform.position.z);
-                continue;
-            }
-
-            // Down-Left
-            if (occupiedSquare.transform.position.x < relativeSquare.transform.position.x && occupiedSquare.transform.position.z < relativeSquare.transform.position.z)
-            {
-                squaresList.RemoveAll(x => x.transform.position.x <= occupiedSquare.transform.position.x && x.transform.position.z <= occupiedSquare.transform.position.z);
-                continue;
-            }
-
-            // Down-Right
-            if (occupiedSquare.transform.position.x > relativeSquare.transform.position.x && occupiedSquare.transform.position.z < relativeSquare.transform.position.z)
-            {
-                squaresList.RemoveAll(x => x.transform.position.x >= occupiedSquare.transform.position.x && x.transform.position.z <= occupiedSquare.transform.position.z);
-                continue;
-            }
+            Debug.LogError($"Can not find any object with tag {SquareTagName}");
+            return new List<Square>();
         }
 
-        return squaresList;
-    }
+        var squares = squaredTaggedGameObjects.SelectMany(square => square.GetComponents<Square>()).ToList();
 
-    private static IEnumerable<Square> FilterBlockedDerpendicularFields(this IEnumerable<Square> squares, Square relativeSquare)
-    {
-        // TODO this no make any sense to cast is to list and again to ienumerable
-        var squaresList = squares.ToList();
+        var spawningSquares = new List<Square>();
+        spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('1')));
+        spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('2')));
+        spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('7')));
+        spawningSquares.AddRange(squares.Where(x => x.GetCoordinates().Row.Equals('8')));
 
-        foreach (var occupiedSquare in squares.Where(square => square.IsOccupied))
-        {
-            // Left
-            if (occupiedSquare.transform.position.x < relativeSquare.transform.position.x)
-            {
-                squaresList.RemoveAll(x => x.transform.position.x <= occupiedSquare.transform.position.x);
-                continue;
-            }
-
-            // Right
-            if (occupiedSquare.transform.position.x > relativeSquare.transform.position.x)
-            {
-                squaresList.RemoveAll(x => x.transform.position.x >= occupiedSquare.transform.position.x);
-                continue;
-            }
-
-            // Top
-            if (occupiedSquare.transform.position.z > relativeSquare.transform.position.z)
-            {
-                squaresList.RemoveAll(x => x.transform.position.z >= occupiedSquare.transform.position.z);
-                continue;
-            }
-
-            // Bottom
-            if (occupiedSquare.transform.position.z < relativeSquare.transform.position.z)
-            {
-                squaresList.RemoveAll(x => x.transform.position.z <= occupiedSquare.transform.position.z);
-                continue;
-            }
-        }
-
-        return squaresList;
+        return spawningSquares;
     }
 }
