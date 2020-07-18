@@ -5,22 +5,20 @@ using UnityEngine;
 
 public class Square : MonoBehaviour
 {
-    private Coords _coord;
+    [SerializeField]
+    internal char Row;
+
+    [SerializeField]
+    internal char Column;
 
     [SerializeField]
     internal bool IsOccupied;   
 
     internal List<SquareMarkOrientation> SquareMarkOrientationFlags { get; private set; }
 
-    internal void SetCoordinates(char row, char column)
-    {
-        _coord = new Coords(row, column);
-        SetSquareTextSymbolFlat();
-    }
-
     internal Coords GetCoordinates()
     {
-        return _coord;
+        return new Coords(Row, Column);
     }
 
     internal void SetColor(Material material)
@@ -32,13 +30,13 @@ public class Square : MonoBehaviour
     {
         SquareMarkOrientationFlags = new List<SquareMarkOrientation>();
 
-        if (_coord.Row.Equals(BoardConfiguration.AvailableSquareNumbers[0]) ||
-           _coord.Row.Equals(BoardConfiguration.AvailableSquareNumbers[BoardConfiguration.AvailableSquareNumbers.Length - 1]))
+        if (GetCoordinates().Row.Equals(BoardConfiguration.AvailableSquareNumbers[0]) ||
+           GetCoordinates().Row.Equals(BoardConfiguration.AvailableSquareNumbers[BoardConfiguration.AvailableSquareNumbers.Length - 1]))
         {
             SquareMarkOrientationFlags.Add(SquareMarkOrientation.Horizontal);
         }
-        if (_coord.Column.Equals(BoardConfiguration.AvailableSquareSymbols[0]) ||
-            _coord.Column.Equals(BoardConfiguration.AvailableSquareSymbols[BoardConfiguration.AvailableSquareSymbols.Length - 1]))
+        if (GetCoordinates().Column.Equals(BoardConfiguration.AvailableSquareSymbols[0]) ||
+            GetCoordinates().Column.Equals(BoardConfiguration.AvailableSquareSymbols[BoardConfiguration.AvailableSquareSymbols.Length - 1]))
         {
             SquareMarkOrientationFlags.Add(SquareMarkOrientation.Vertical);
         }

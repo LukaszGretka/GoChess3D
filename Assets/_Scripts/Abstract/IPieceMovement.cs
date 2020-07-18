@@ -10,7 +10,7 @@ namespace Assets._Scripts.Abstract
 
         IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare);
 
-        void HandlePieceSelection(GameObject pieceGameObject);
+        void HandlePieceSelection(GameObject pieceGameObject, IEnumerable<Square> possibleMovementSquares);
 
         void HandlePieceDeselection(GameObject pieceGameObject);
     }

@@ -10,8 +10,9 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkIdentity))]
 public class PlayerController : Player
 {
-    private GameObject _selectedPiece;
+    private GameObject _currentlySelectedPiece;
     private OnBoardMovementLogic _onBoardMovementLogic;
+    private IEnumerable<Square> _possibleMovementSquares;
 
     public override void OnStartLocalPlayer()
     {
@@ -38,22 +39,23 @@ public class PlayerController : Player
 
             if (newSelectedPiece != null)
             {
-                if (_selectedPiece != null)
+                if (_currentlySelectedPiece != null)
                 {
-                    _selectedPiece.GetComponent<IPieceMovement>().HandlePieceDeselection(_selectedPiece);
+                    _currentlySelectedPiece.GetComponent<IPieceMovement>().HandlePieceDeselection(_currentlySelectedPiece);
                     _onBoardMovementLogic.RemoveBacklightFromSquares();
                 }
 
-                newSelectedPiece.GetComponent<IPieceMovement>().HandlePieceSelection(newSelectedPiece);
+                _possibleMovementSquares = _onBoardMovementLogic.GetPossiblePieceMovement(newSelectedPiece);
+                newSelectedPiece.GetComponent<IPieceMovement>().HandlePieceSelection(newSelectedPiece, _possibleMovementSquares);
 
-                _selectedPiece = newSelectedPiece;
+                _currentlySelectedPiece = newSelectedPiece;
                 return;
             }
         }
 
-        if (Input.GetMouseButtonDown(0) && _selectedPiece != null && CheckIfClickedOnSquare())
+        if (Input.GetMouseButtonDown(0) && _currentlySelectedPiece != null && CheckIfClickedOnSquare())
         {
-            PerformPieceMovement(GameObjectHelper.GetComponentFromRayCast<Square>(), _onBoardMovementLogic.GetPossiblePieceMovement(_selectedPiece));
+            PerformPieceMovement(GameObjectHelper.GetComponentFromRayCast<Square>(), _possibleMovementSquares);
         }
     }
 
@@ -101,11 +103,11 @@ public class PlayerController : Player
     {
         if (possibleMovementSquares.ToList().Contains(selectedSquare))
         {
-            CmdDeattachPieceFromLeavingSquare(_selectedPiece.GetComponentInParent<Square>().gameObject);
-            CmdAttachPieceToTargetingSquare(selectedSquare.gameObject, _selectedPiece);
+            CmdDeattachPieceFromLeavingSquare(_currentlySelectedPiece.GetComponentInParent<Square>().gameObject);
+            CmdAttachPieceToTargetingSquare(selectedSquare.gameObject, _currentlySelectedPiece);
 
-            _selectedPiece.GetComponent<IPieceMovement>().HandlePieceDeselection(_selectedPiece);
-            _selectedPiece = null;
+            _currentlySelectedPiece.GetComponent<IPieceMovement>().HandlePieceDeselection(_currentlySelectedPiece);
+            _currentlySelectedPiece = null;
         }
     }
 

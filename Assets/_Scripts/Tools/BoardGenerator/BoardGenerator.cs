@@ -87,7 +87,7 @@ public class BoardGenerator : NetworkBehaviour
 
     private Square SetCurrentSquareBasicComponents(Square currentSquare, char number, char square, Material color)
     {
-        currentSquare.SetCoordinates(number, square);
+        //currentSquare.SetCoordinates(number, square);
         currentSquare.SetColor(color);
 
         return currentSquare;

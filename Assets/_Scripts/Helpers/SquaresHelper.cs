@@ -16,22 +16,26 @@ internal static class SquaresHelper
     internal static IEnumerable<Square> GetMovement(MovementType movementType, Square relativeSquare)
     {
         // TODO to refactor. May cost big performane hit.
-        _onBoardSquares = GameObject.FindGameObjectsWithTag(SquareTagName).Select(square => square.GetComponent<Square>());
+        _onBoardSquares = GameObject.FindGameObjectsWithTag(SquareTagName)
+                                    .Select(square => square.GetComponent<Square>());
 
         switch (movementType)
         {
             case MovementType.Diagonaly:
-                return GetDiagonalyLocatedSquares(relativeSquare).FilterBlockedDiagonalFields(relativeSquare);
+                return GetDiagonalyLocatedSquares(relativeSquare).FilterBlockedDiagonalFields(relativeSquare)
+                                                                 .FilterSamePieceColorOccupiedSquares(relativeSquare);
 
             case MovementType.Derpendicularly:
-                return GetDerpendicularlyLocatedSquares(relativeSquare).FilterBlockedDerpendicularFields(relativeSquare);
-            
+                return GetDerpendicularlyLocatedSquares(relativeSquare).FilterBlockedDerpendicularFields(relativeSquare)
+                                                                       .FilterSamePieceColorOccupiedSquares(relativeSquare);
+
             case MovementType.Knight:
-                return GetKnightMovementLocatedSquares(relativeSquare);
-           
+                return GetKnightMovementLocatedSquares(relativeSquare).FilterSamePieceColorOccupiedSquares(relativeSquare);
+
             case MovementType.DiagonalAndDerpendicular:
                 return CombinedDiagonalAndDerpendicular(relativeSquare).FilterBlockedDiagonalFields(relativeSquare)
-                                                                       .FilterBlockedDerpendicularFields(relativeSquare);
+                                                                       .FilterBlockedDerpendicularFields(relativeSquare)
+                                                                       .FilterSamePieceColorOccupiedSquares(relativeSquare);
             default:
                 break;
         }
@@ -76,8 +80,7 @@ internal static class SquaresHelper
         return _onBoardSquares.Where(square => (square.transform.position.z == relativeSquare.transform.position.z + 2f
                                                 || square.transform.position.z == relativeSquare.transform.position.z - 2f)
                                                     && (square.transform.position.x == relativeSquare.transform.position.x + 1f
-                                                || square.transform.position.x == relativeSquare.transform.position.x - 1f))
-                                                .Where(square => !square.IsOccupied);
+                                                || square.transform.position.x == relativeSquare.transform.position.x - 1f));
     }
 
     private static IEnumerable<Square> FilterBlockedDerpendicularFields(this IEnumerable<Square> squares, Square relativeSquare)
@@ -96,7 +99,7 @@ internal static class SquaresHelper
             if (occupedSquarePosX == relativeSquarePosX && occupedSquarePosZ > relativeSquarePosZ)
             {
                 squaresList.RemoveAll(x => x.transform.position.x == occupedSquarePosX
-                                        && x.transform.position.z >= occupedSquarePosZ);
+                                        && x.transform.position.z > occupedSquarePosZ);
                 continue;
             }
 
@@ -104,7 +107,7 @@ internal static class SquaresHelper
             if (occupedSquarePosX == relativeSquarePosX && occupedSquarePosZ < relativeSquarePosZ)
             {
                 squaresList.RemoveAll(x => x.transform.position.x == occupedSquarePosX
-                                        && x.transform.position.z <= occupedSquarePosZ);
+                                        && x.transform.position.z < occupedSquarePosZ);
                 continue;
             }
 
@@ -112,7 +115,7 @@ internal static class SquaresHelper
             if (occupedSquarePosZ == relativeSquarePosZ && occupedSquarePosX > relativeSquarePosX)
             {
                 squaresList.RemoveAll(x => x.transform.position.z == occupedSquarePosZ
-                                        && x.transform.position.x >= occupedSquarePosX);
+                                        && x.transform.position.x > occupedSquarePosX);
                 continue;
             }
 
@@ -120,7 +123,7 @@ internal static class SquaresHelper
             if (occupedSquarePosZ == relativeSquarePosZ && occupedSquarePosX < relativeSquarePosX)
             {
                 squaresList.RemoveAll(x => x.transform.position.z == occupedSquarePosZ
-                                        && x.transform.position.x <= occupedSquarePosX);
+                                        && x.transform.position.x < occupedSquarePosX);
                 continue;
             }
         }
@@ -144,7 +147,7 @@ internal static class SquaresHelper
             if (occupedSquarePosX < relativeSquarePosX && occupedSquarePosZ > relativeSquarePosZ)
             {
                 squaresList.RemoveAll(x => x.transform.position.x <= occupedSquarePosX
-                                        && x.transform.position.z >= occupedSquarePosZ);
+                                        && x.transform.position.z > occupedSquarePosZ);
                 continue;
             }
 
@@ -152,7 +155,7 @@ internal static class SquaresHelper
             if (occupedSquarePosX > relativeSquarePosX && occupedSquarePosZ > relativeSquarePosZ)
             {
                 squaresList.RemoveAll(x => x.transform.position.x >= occupedSquarePosX
-                                        && x.transform.position.z >= occupedSquarePosZ);
+                                        && x.transform.position.z > occupedSquarePosZ);
                 continue;
             }
 
@@ -160,7 +163,7 @@ internal static class SquaresHelper
             if (occupedSquarePosX < relativeSquarePosX && occupedSquarePosZ < relativeSquarePosZ)
             {
                 squaresList.RemoveAll(x => x.transform.position.x <= occupedSquarePosX
-                                        && x.transform.position.z <= occupedSquarePosZ);
+                                        && x.transform.position.z < occupedSquarePosZ);
                 continue;
             }
 
@@ -168,12 +171,34 @@ internal static class SquaresHelper
             if (occupedSquarePosX > relativeSquarePosX && occupedSquarePosZ < relativeSquare.transform.position.z)
             {
                 squaresList.RemoveAll(x => x.transform.position.x >= occupedSquarePosX
-                                        && x.transform.position.z <= occupedSquarePosZ);
+                                        && x.transform.position.z < occupedSquarePosZ);
                 continue;
             }
         }
 
         return squaresList;
+    }
+
+    private static IEnumerable<Square> FilterSamePieceColorOccupiedSquares(this IEnumerable<Square> inputCollection, Square relativeSquare)
+    {
+        List<Square> outputCollection = inputCollection.ToList();
+
+        var processedCollection = inputCollection.Select(x => x.GetComponentInChildren<Piece>())
+                                                  .Where(x => x != null && x.PieceColor == relativeSquare.GetComponentInChildren<Piece>().PieceColor)
+                                                  .Select(y => y.GetComponentInParent<Square>());
+
+        foreach (var item in processedCollection)
+        {
+            foreach (var innerItem in inputCollection)
+            {
+                if (innerItem.Column == item.Column && innerItem.Row == item.Row)
+                {
+                    outputCollection.RemoveAll(pred => pred.GetCoordinates().Column == item.Column && pred.GetCoordinates().Row == item.Row);
+                }
+            }
+        }
+
+        return outputCollection;
     }
 
     [Obsolete]

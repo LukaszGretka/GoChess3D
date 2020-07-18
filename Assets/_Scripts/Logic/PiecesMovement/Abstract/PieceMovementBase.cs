@@ -1,5 +1,6 @@
 ﻿using Assets._Scripts.Board.Control;
 using Assets._Scripts.Pieces.Helpers;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets._Scripts.Logic.PiecesMovement.Abstract
@@ -13,11 +14,11 @@ namespace Assets._Scripts.Logic.PiecesMovement.Abstract
             _onBoardMovementLogic = GameObject.Find("Board").GetComponent<OnBoardMovementLogic>();
         }
 
-        public void HandlePieceSelection(GameObject pieceGameObject)
+        public void HandlePieceSelection(GameObject pieceGameObject, IEnumerable<Square> possibleMovementSquares)
         {
             IsSelected = true;
             pieceGameObject.GetComponent<Renderer>().material.color = Color.red;
-            _onBoardMovementLogic.SetBacklightColorToSquare(_onBoardMovementLogic.GetPossiblePieceMovement(pieceGameObject));
+            _onBoardMovementLogic.SetBacklightColorToSquare(possibleMovementSquares);
         }
 
         public void HandlePieceDeselection(GameObject pieceGameObject)

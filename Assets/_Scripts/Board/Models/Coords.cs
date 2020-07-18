@@ -1,10 +1,14 @@
-﻿namespace Assets._Scripts.Board.Models
+﻿using UnityEngine;
+
+namespace Assets._Scripts.Board.Models
 {
     internal class Coords
     {
-        internal char Row { get; private set; }
+        [SerializeField]
+        internal char Row;
 
-        internal char Column { get; private set; }
+        [SerializeField]
+        internal char Column;
 
         public Coords(char row, char column)
         {
