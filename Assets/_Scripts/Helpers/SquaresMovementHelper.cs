@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-internal static class SquaresHelper
+internal static class SquaresMovementHelper
 {
     private const string SquareTagName = "Square";
     private static IEnumerable<Square> _onBoardSquares;

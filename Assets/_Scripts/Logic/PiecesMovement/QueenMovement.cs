@@ -13,7 +13,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         public IEnumerable<Square> GetPossibleMovementSquares(Square currentSquare)
         {
-            return SquaresHelper.GetMovement(MovementType, currentSquare);
+            return SquaresMovementHelper.GetMovement(MovementType, currentSquare);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
 
         private IEnumerable<Square> GetWhitePlayerFirstTurnPossibleMovement(Square currentSquare, PieceColor pieceOnSquareColor)
         {
-            return SquaresHelper.GetMovement(MovementType, currentSquare)
+            return SquaresMovementHelper.GetMovement(MovementType, currentSquare)
                 .Where(square => (pieceOnSquareColor == PieceColor.White ?
                         square.transform.position.z == currentSquare.transform.position.z + 2f 
                             || square.transform.position.z == currentSquare.transform.position.z + 1f
@@ -31,7 +31,7 @@ namespace Assets._Scripts.Logic.PiecesMovement
         }
         private IEnumerable<Square> GetStandardPossibleMovement(Square currentSquare, PieceColor pieceOnSquareColor)
         {
-            return SquaresHelper.GetMovement(MovementType, currentSquare)
+            return SquaresMovementHelper.GetMovement(MovementType, currentSquare)
                 .Where(square => pieceOnSquareColor == PieceColor.White ?
                         square.transform.position.z == currentSquare.transform.position.z + 1f
                         : square.transform.position.z == currentSquare.transform.position.z - 1f);

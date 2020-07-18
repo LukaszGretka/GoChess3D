@@ -56,6 +56,13 @@ public class PlayerController : Player
         if (Input.GetMouseButtonDown(0) && _currentlySelectedPiece != null && CheckIfClickedOnSquare())
         {
             PerformPieceMovement(GameObjectHelper.GetComponentFromRayCast<Square>(), _possibleMovementSquares);
+
+            if (SquaresAttackHelper.CheckIfEncouteredHostilePiece(_currentlySelectedPiece.GetComponent<Piece>()))
+            {
+                SquaresAttackHelper.RemoveHostilePiece(_currentlySelectedPiece.GetComponent<Piece>());
+            }
+
+            _currentlySelectedPiece = null;
         }
     }
 
@@ -107,7 +114,6 @@ public class PlayerController : Player
             CmdAttachPieceToTargetingSquare(selectedSquare.gameObject, _currentlySelectedPiece);
 
             _currentlySelectedPiece.GetComponent<IPieceMovement>().HandlePieceDeselection(_currentlySelectedPiece);
-            _currentlySelectedPiece = null;
         }
     }
 
