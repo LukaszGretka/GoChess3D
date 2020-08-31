@@ -16,7 +16,12 @@ namespace Assets._Scripts.Helpers
             children.transform.position = childrenOffset;
         }
 
-        internal static GameObject GetGameObjectFromRayCast()
+        internal static T GetComponentFromRayCast<T>() where T : Component
+        {
+            return GetGameObjectFromRayCast()?.GetComponent<T>();
+        }
+
+        private static GameObject GetGameObjectFromRayCast()
         {
             Ray rayFromCam = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -26,11 +31,6 @@ namespace Assets._Scripts.Helpers
             }
 
             return rayHit.collider.gameObject;
-        }
-
-        internal static T GetComponentFromRayCast<T>() where T : Component
-        {
-            return GetGameObjectFromRayCast().GetComponent<T>();
         }
     }
 }

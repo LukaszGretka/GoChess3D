@@ -81,20 +81,20 @@ public class PlayerController : Player
 
     private GameObject SelectPiece()
     {
-        var hitPiece = GameObjectHelper.GetGameObjectFromRayCast();
-        var hitPieceComponent = hitPiece.GetComponent<Piece>();
+        var hitPieceComponent = GameObjectHelper.GetComponentFromRayCast<Piece>();
 
         if (hitPieceComponent is null)
         {
-            Debug.LogError($"No {nameof(Piece)} attached to hit object. Object name: {hitPiece.name}");
+            Debug.Log($"No {nameof(Piece)} attached to hit object.");
             return null;
         }
-
+       
         if (PieceColor != hitPieceComponent.PieceColor)
         {
             return null;
         }
 
+        var hitPiece = hitPieceComponent.gameObject;
         var hitPieceIPieceMovementComponent = hitPiece.GetComponent<IPieceMovement>();
 
         if (hitPieceIPieceMovementComponent is null)

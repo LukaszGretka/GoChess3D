@@ -77,10 +77,14 @@ internal static class SquaresMovementHelper
 
     private static IEnumerable<Square> GetKnightMovementLocatedSquares(Square relativeSquare)
     {
-        return _onBoardSquares.Where(square => (square.transform.position.z == relativeSquare.transform.position.z + 2f
+        return _onBoardSquares.Where(square => ((square.transform.position.z == relativeSquare.transform.position.z + 2f
                                                 || square.transform.position.z == relativeSquare.transform.position.z - 2f)
                                                     && (square.transform.position.x == relativeSquare.transform.position.x + 1f
-                                                || square.transform.position.x == relativeSquare.transform.position.x - 1f));
+                                                || square.transform.position.x == relativeSquare.transform.position.x - 1f))
+                                            || (square.transform.position.z == relativeSquare.transform.position.z + 1f
+                                                || square.transform.position.z == relativeSquare.transform.position.z - 1f)
+                                                    && (square.transform.position.x == relativeSquare.transform.position.x + 2f
+                                                || square.transform.position.x == relativeSquare.transform.position.x - 2f));
     }
 
     private static IEnumerable<Square> FilterBlockedDerpendicularFields(this IEnumerable<Square> squares, Square relativeSquare)
